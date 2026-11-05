@@ -46,8 +46,14 @@ async function loadLanguage() {
   const [settings, messages] = await Promise.all([stored, catalog]);
   translations = messages;
   const candidates = [settings.uiLanguage, ...(navigator.languages || [navigator.language])];
-  const language = candidates.find((value) => /^(zh|en)(-|$)/i.test(value || ""));
-  locale = /^en(-|$)/i.test(language || "") ? "en" : "zh-CN";
+  const language = candidates.find((value) => /^(zh|en|pt)(-|$)/i.test(value || "")) || "";
+  if (/^zh(-|$)/i.test(language)) {
+    locale = "zh-CN";
+  } else if (/^pt(-|$)/i.test(language)) {
+    locale = "pt-BR";
+  } else {
+    locale = "en";
+  }
   renderLanguage();
 }
 
@@ -117,7 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadSettings();
   $("saveBtn").addEventListener("click", saveSettings);
   $("language").addEventListener("change", () => {
-    locale = $("language").value === "en" ? "en" : "zh-CN";
+    locale = $("language").value === "en" ? "en" : ($("language").value === "pt-BR" ? "pt-BR" : "zh-CN");
     renderLanguage();
     chrome.storage.local.set({ uiLanguage: locale }, () => {
       if (chrome.runtime.lastError) {

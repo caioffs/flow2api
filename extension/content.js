@@ -7,11 +7,32 @@ function getRecaptchaToken(action) {
         script.textContent = `
             try {
                 function runCaptcha() {
-                    grecaptcha.enterprise.ready(function() {
-                        grecaptcha.enterprise.execute('6LdsFiUsAAAAAIjVDZcuLhaHiDn5nnHVXVRQGeMV', {action: '${action}'})
-                            .then(token => window.postMessage({type: 'reCAPTCHA_result', reqId: '${reqId}', token: token}, '*'))
-                            .catch(err => window.postMessage({type: 'reCAPTCHA_error', reqId: '${reqId}', error: err.message}, '*'));
-                    });
+                    const storageKey = '__flow2apiTrustedRecaptchaExecute';
+                    const execute = window[storageKey]
+                        || (window.grecaptcha && window.grecaptcha.enterprise
+                            ? window.grecaptcha.enterprise.execute
+                            : null);
+                    if (typeof execute !== 'function') {
+                        window.postMessage({type: 'reCAPTCHA_error', reqId: '${reqId}', error: 'reCAPTCHA execute is unavailable'}, '*');
+                        return;
+                    }
+                    let target = '6LdsFiUsAAAAAIjVDZcuLhaHiDn5nnHVXVRQGeMV';
+                    try {
+                        if (!window[storageKey] && window.grecaptcha.enterprise
+                            && typeof window.grecaptcha.enterprise.render === 'function'
+                            && window.__flow2apiRecaptchaClientId === undefined) {
+                            window.__flow2apiRecaptchaClientId = window.grecaptcha.enterprise.render(
+                                document.documentElement,
+                                { sitekey: target, action: '${action}' }
+                            );
+                        }
+                        if (window.__flow2apiRecaptchaClientId !== undefined) {
+                            target = window.__flow2apiRecaptchaClientId;
+                        }
+                    } catch (e) {}
+                    Promise.resolve(execute(target, {action: '${action}'}))
+                        .then(token => window.postMessage({type: 'reCAPTCHA_result', reqId: '${reqId}', token: token}, '*'))
+                        .catch(err => window.postMessage({type: 'reCAPTCHA_error', reqId: '${reqId}', error: err.message}, '*'));
                 }
                 
                 if (typeof grecaptcha !== "undefined" && grecaptcha.enterprise) {

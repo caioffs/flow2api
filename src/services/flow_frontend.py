@@ -115,6 +115,10 @@ class FlowFrontendMixin:
         frames: List[List[Any]],
         rpc_id: str,
     ) -> None:
+        debug_logger.log_error(
+            f"[Flow Frontend] batchexecute frames for rpc={rpc_id}: "
+            f"{json.dumps(frames, ensure_ascii=False)[:4000]}"
+        )
         for frame in frames:
             for item in frame:
                 if not isinstance(item, list) or len(item) < 3:

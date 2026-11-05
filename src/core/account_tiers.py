@@ -1,11 +1,21 @@
 """Account tier and model capability helpers."""
 
-from typing import Optional
+from typing import Optional, Tuple
 
 
 PAYGATE_TIER_NOT_PAID = "PAYGATE_TIER_NOT_PAID"
 PAYGATE_TIER_ONE = "PAYGATE_TIER_ONE"
 PAYGATE_TIER_TWO = "PAYGATE_TIER_TWO"
+
+# Flow's Veo family is not reachable from a Pro (PAYGATE_TIER_ONE) account:
+# Google answers PUBLIC_ERROR_MODEL_ACCESS_DENIED for every Veo model key.
+# Measured on a paid Pro account (credits > 0) for lite / fast / quality,
+# text-to-video and image-to-video. The Omni family works on the same account.
+MODEL_FAMILY_TIER_REQUIREMENTS: Tuple[Tuple[str, str], ...] = (
+    ("veo-3.1", PAYGATE_TIER_TWO),
+    ("veo-3", PAYGATE_TIER_TWO),
+    ("veo_3_1", PAYGATE_TIER_TWO),
+)
 
 
 def normalize_user_paygate_tier(user_paygate_tier: Optional[str]) -> str:
@@ -41,6 +51,10 @@ def get_required_paygate_tier_for_model(model_name: Optional[str]) -> str:
     normalized = (model_name or "").strip().lower()
     if not normalized:
         return PAYGATE_TIER_NOT_PAID
+
+    for prefix, required_tier in MODEL_FAMILY_TIER_REQUIREMENTS:
+        if normalized.startswith(prefix):
+            return required_tier
 
     if (
         normalized.endswith("-4k")

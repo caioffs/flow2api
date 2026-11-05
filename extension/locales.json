@@ -36,5 +36,24 @@
     "保存失败：{error}": "Unable to save settings: {error}",
     "已保存，后台连接会自动重连。": "Settings saved. The background connection will reconnect automatically.",
     "语言偏好保存失败：{error}": "Unable to save language preference: {error}"
+  },
+  "pt-BR": {
+    "Flow2API Captcha Worker Settings": "Configurações do Flow2API Captcha Worker",
+    "界面语言": "Idioma da interface",
+    "给当前浏览器实例设置一个独立的路由键，Flow2API 后端就能把对应账号的验证码请求固定发到这个实例。": "Dê a este navegador uma route key única para que o Flow2API envie a este instância as solicitações de captcha da conta correspondente.",
+    "Route Key": "Route key",
+    "Client Label": "Nome do cliente",
+    "WebSocket URL": "URL do WebSocket",
+    "例如 9223": "ex.: 9223",
+    "例如 browser-9223": "ex.: browser-9223",
+    "管理后台里的 API Key": "API Key do painel administrativo",
+    "保存": "Salvar",
+    "管理台 token 里填写同样的": "Use a mesma",
+    "，比如 9223 对 9223。后端会使用 API Key 校验 WebSocket 连接。": " nas configurações do token, por exemplo 9223 nos dois. O servidor valida a conexão WebSocket com a API Key.",
+    "WebSocket URL 必须以 ws:// 或 wss:// 开头。": "A URL do WebSocket precisa começar com ws:// ou wss://.",
+    "请填写 Flow2API API Key。": "Informe a API Key do Flow2API.",
+    "保存失败：{error}": "Falha ao salvar as configurações: {error}",
+    "已保存，后台连接会自动重连。": "Configurações salvas. A conexão em segundo plano vai reconectar automaticamente.",
+    "语言偏好保存失败：{error}": "Falha ao salvar a preferência de idioma: {error}"
   }
 }

@@ -5217,7 +5217,9 @@ class _FlowClientBase(FlowFrontendMixin):
                 from .browser_captcha_extension import ExtensionCaptchaService
 
                 service = await ExtensionCaptchaService.get_instance(self.db)
-                extension_timeout = 45 if action == "VIDEO_GENERATION" else 25
+                # The extension opens a real Flow tab and waits for the app to boot
+                # before it can harvest the token, so it needs a generous budget.
+                extension_timeout = 150 if action == "VIDEO_GENERATION" else 90
                 token = await service.get_token(
                     project_id, action, timeout=extension_timeout, token_id=token_id
                 )

@@ -1833,7 +1833,13 @@ class GenerationHandler:
                     f"[GENERATION] 生成未成功，不扣次数: {error_msg}"
                 )
                 if token:
-                    await self.token_manager.record_error(token.id)
+                    if self._should_count_token_error(Exception(error_msg)):
+                        await self.token_manager.record_error(token.id)
+                    else:
+                        debug_logger.log_info(
+                            f"[GENERATION] 跳过 token 错误计数: token_id={token.id}, "
+                            f"reason={str(error_msg)[:200]}"
+                        )
                 duration = time.time() - start_time
                 record_generation_result(generation_type, "failed", duration)
                 perf_trace["status"] = "failed"
@@ -2015,6 +2021,10 @@ class GenerationHandler:
             "recaptcha 验证失败",
             "recaptcha 错误",
             "public_error_unusual_activity",
+            # The account may simply not be entitled to the requested model.
+            # This says nothing about the health of the token, so it must not
+            # push it over the auto-disable threshold.
+            "model_access_denied",
             "too much traffic",
             "error_no_slot_available",
             "打码服务资源不足",
