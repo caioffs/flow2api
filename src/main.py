@@ -369,6 +369,20 @@ async def test_page(request: Request):
     return HTMLResponse(content="<h1>Test Page Not Found</h1>", status_code=404)
 
 
+@app.get("/extensions", response_class=HTMLResponse)
+async def extensions_page(request: Request):
+    """Browser extension setup page"""
+    guard_response = _ensure_admin_page_session(request)
+    if guard_response is not None:
+        return guard_response
+    extensions_file = static_path / "extensions.html"
+    if extensions_file.exists():
+        return _static_page_response(extensions_file)
+    return HTMLResponse(
+        content="<h1>Extensions Page Not Found</h1>", status_code=404
+    )
+
+
 @app.get("/metrics")
 async def metrics():
     """Prometheus metrics endpoint for the main Flow2API service."""

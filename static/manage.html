@@ -50,6 +50,7 @@
                 <button onclick="switchTab('settings')" id="tabSettings" class="tab-btn border-b-2 border-transparent text-sm font-medium py-3 px-1"><span data-i18n="系统配置">系统配置</span></button>
                 <button onclick="switchTab('logs')" id="tabLogs" class="tab-btn border-b-2 border-transparent text-sm font-medium py-3 px-1"><span data-i18n="请求日志">请求日志</span></button>
                 <a href="/test" id="tabTestPage" class="tab-btn inline-flex items-center border-b-2 border-transparent text-sm font-medium py-3 px-1"><span data-i18n="测试页面">测试页面</span></a>
+                <a href="/extensions" id="tabExtensionsPage" class="tab-btn inline-flex items-center border-b-2 border-transparent text-sm font-medium py-3 px-1"><span data-i18n="浏览器扩展">浏览器扩展</span></a>
             </nav>
         </div>
 
@@ -369,6 +370,7 @@
                             <select id="cfgCaptchaMethod" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" onchange="toggleCaptchaOptions()">
                                 <option value="yescaptcha" data-i18n="YesCaptcha打码">YesCaptcha打码</option>
                                 <option value="flow2api_team" data-i18n="Flow2API团队打码（内置）">Flow2API团队打码（内置）</option>
+                                <option value="extension" data-i18n="浏览器扩展打码">浏览器扩展打码</option>
                                 <option value="captcharun" data-i18n="Captcha.run打码">Captcha.run打码</option>
                                 <option value="twocaptcha" data-i18n="2Captcha打码">2Captcha打码</option>
                                 <option value="capsolver" data-i18n="CapSolver打码">CapSolver打码</option>

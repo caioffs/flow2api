@@ -26,6 +26,9 @@ class ExtensionCaptchaService:
         self.db = db
         self.active_connections: list[ExtensionConnection] = []
         self.pending_requests: dict[str, tuple[asyncio.Future, WebSocket]] = {}
+        # Rolling history of token requests, newest first. The admin panel shows
+        # this so a failing extension is diagnosable without reading logs.
+        self.recent_requests: list[Dict[str, Any]] = []
 
     @classmethod
     async def get_instance(cls, db=None) -> "ExtensionCaptchaService":
@@ -93,6 +96,49 @@ class ExtensionCaptchaService:
 
     def describe_routes(self) -> str:
         return self._describe_routes()
+
+    def _record_request(
+        self,
+        *,
+        action: str,
+        ok: bool,
+        duration_ms: int,
+        error: str = "",
+        token_prefix: str = "",
+    ) -> None:
+        self.recent_requests.insert(
+            0,
+            {
+                "at": time.time(),
+                "action": action,
+                "ok": ok,
+                "duration_ms": duration_ms,
+                "error": error[:400],
+                "token_prefix": token_prefix,
+            },
+        )
+        del self.recent_requests[20:]
+
+    def get_status(self, configured_api_key: str = "") -> Dict[str, Any]:
+        """Snapshot the extension bridge for the admin panel."""
+        now = time.time()
+        connections = [
+            {
+                "route_key": conn.route_key,
+                "client_label": conn.client_label,
+                "connected_for_s": int(now - conn.connected_at),
+            }
+            for conn in self.active_connections
+        ]
+        return {
+            "connected": bool(connections),
+            "connection_count": len(connections),
+            "connections": connections,
+            "pending_requests": len(self.pending_requests),
+            "recent_requests": list(self.recent_requests),
+            "configured_api_key": configured_api_key,
+            "ws_path": "/captcha_ws",
+        }
 
     async def _send_ack(self, websocket: WebSocket, payload: Dict[str, Any]):
         try:
@@ -199,6 +245,7 @@ class ExtensionCaptchaService:
             "route_key": route_key,
         }
 
+        started_at = time.time()
         try:
             debug_logger.log_info(
                 f"[Extension Captcha] Dispatching token request via route_key={route_key or '-'}, "
@@ -208,11 +255,25 @@ class ExtensionCaptchaService:
             result = await asyncio.wait_for(future, timeout=timeout)
 
             if result.get("status") == "success":
-                return result.get("token")
+                token = str(result.get("token") or "")
+                self._record_request(
+                    action=action,
+                    ok=bool(token),
+                    duration_ms=int((time.time() - started_at) * 1000),
+                    error="" if token else "Extension returned an empty token",
+                    token_prefix=token[:12],
+                )
+                return token or None
 
             error_msg = result.get("error")
             debug_logger.log_error(
                 f"[Extension Captcha] Error from extension: {error_msg}"
+            )
+            self._record_request(
+                action=action,
+                ok=False,
+                duration_ms=int((time.time() - started_at) * 1000),
+                error=str(error_msg or "Unknown extension error"),
             )
             return None
 
@@ -220,9 +281,21 @@ class ExtensionCaptchaService:
             debug_logger.log_error(
                 f"[Extension Captcha] Timeout waiting for token (req_id: {req_id})"
             )
+            self._record_request(
+                action=action,
+                ok=False,
+                duration_ms=int((time.time() - started_at) * 1000),
+                error=f"Timeout após {timeout}s sem resposta da extensão",
+            )
             return None
         except Exception as e:
             debug_logger.log_error(f"[Extension Captcha] Communication error: {e}")
+            self._record_request(
+                action=action,
+                ok=False,
+                duration_ms=int((time.time() - started_at) * 1000),
+                error=f"Falha de comunicação: {e}",
+            )
             return None
         finally:
             self.pending_requests.pop(req_id, None)

@@ -3,9 +3,12 @@
 import asyncio
 import hashlib
 import importlib
+import io
 import sys
 import json
+import zipfile
 from datetime import datetime, timezone
+from pathlib import Path
 from fastapi import APIRouter, Depends, HTTPException, Header, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -39,6 +42,13 @@ from ..core.browser_runtime_status import (
     start_runtime_prepare,
 )
 from ..core.monitoring import build_public_health_snapshot
+from ..core.account_tiers import (
+    get_paygate_tier_label,
+    get_required_paygate_tier_for_model,
+    normalize_user_paygate_tier,
+    supports_model_for_tier,
+)
+from ..services.generation_handler import MODEL_CONFIG
 from ..services.token_manager import TokenManager
 from ..services.proxy_manager import ProxyManager
 from ..services.concurrency_manager import ConcurrencyManager
@@ -1090,6 +1100,266 @@ async def get_tokens(token: str = Depends(verify_admin_token)):
         }
         for row in token_rows
     ]  # 直接返回数组,兼容前端
+
+
+@router.get("/api/models/catalog")
+async def get_models_catalog(token: str = Depends(verify_admin_token)):
+    """Return the model catalog annotated with what the current accounts can run.
+
+    The panel uses this to grey out models that Google would reject with
+    PUBLIC_ERROR_MODEL_ACCESS_DENIED, instead of letting the user discover it
+    by generating and failing.
+    """
+    token_rows = await db.get_all_tokens_with_stats()
+    active_rows = [row for row in token_rows if row.get("is_active")]
+
+    account_tiers = []
+    for row in active_rows:
+        tier = normalize_user_paygate_tier(row.get("user_paygate_tier"))
+        if tier not in account_tiers:
+            account_tiers.append(tier)
+
+    models = []
+    for model_id, model_config in MODEL_CONFIG.items():
+        if not model_config.get("listed", True):
+            continue
+        required_tier = get_required_paygate_tier_for_model(model_id)
+        usable = [
+            row
+            for row in active_rows
+            if supports_model_for_tier(model_id, normalize_user_paygate_tier(
+                row.get("user_paygate_tier")
+            ))
+        ]
+        display_name = str(model_config.get("display_name") or "").strip()
+        if not display_name:
+            model_type = model_config.get("type") or "video"
+            display_name = f"{model_type.capitalize()} generation"
+            if model_type == "image":
+                display_name += f" - {model_config.get('model_name') or ''}"
+            else:
+                display_name += f" - {model_config.get('model_key') or ''}"
+        models.append(
+            {
+                "id": model_id,
+                "description": display_name,
+                "type": model_config.get("type") or "video",
+                "available": bool(usable),
+                "required_tier": required_tier,
+                "required_tier_label": get_paygate_tier_label(required_tier),
+                "reason": (
+                    ""
+                    if usable
+                    else "当前账号需要 "
+                    + get_paygate_tier_label(required_tier)
+                    + " 账号"
+                ),
+            }
+        )
+
+    best_tier = max(
+        account_tiers,
+        key=lambda tier: {
+            "PAYGATE_TIER_NOT_PAID": 0,
+            "PAYGATE_TIER_ONE": 1,
+            "PAYGATE_TIER_TWO": 2,
+        }.get(tier, 0),
+        default="PAYGATE_TIER_NOT_PAID",
+    )
+
+    return {
+        "models": models,
+        "account_tier": best_tier,
+        "account_tier_label": get_paygate_tier_label(best_tier),
+        "active_tokens": len(active_rows),
+        "total_tokens": len(token_rows),
+    }
+
+
+_EXTENSIONS_DIR = Path(__file__).resolve().parents[2] / "extension"
+
+
+def _read_extension_version(extension_dir: Path) -> str:
+    try:
+        manifest = json.loads((extension_dir / "manifest.json").read_text("utf-8"))
+        return str(manifest.get("version") or "0.0.0")
+    except Exception:
+        return "0.0.0"
+
+
+def _build_extension_zip(extension_dir: Path, server_url: str, api_key: str) -> bytes:
+    """Package the extension, pre-filling the server URL and API key.
+
+    The repository ships empty defaults so it is safe to publish; the archive a
+    user downloads already points at their own Flow2API instance.
+    """
+    buffer = io.BytesIO()
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as archive:
+        for path in sorted(extension_dir.rglob("*")):
+            if not path.is_file():
+                continue
+            if path.name.startswith(".") or path.suffix in {".map"}:
+                continue
+            data = path.read_bytes()
+            if path.name in {"background.js", "options.js"}:
+                try:
+                    text = data.decode("utf-8")
+                except UnicodeDecodeError:
+                    pass
+                else:
+                    if server_url:
+                        text = re.sub(
+                            r'serverUrl:\s*"[^"]*"',
+                            f'serverUrl: {json.dumps(server_url)}',
+                            text,
+                        )
+                    if api_key:
+                        text = re.sub(
+                            r'apiKey:\s*"[^"]*"',
+                            f'apiKey: {json.dumps(api_key)}',
+                            text,
+                        )
+                    data = text.encode("utf-8")
+            archive.writestr(path.relative_to(extension_dir).as_posix(), data)
+    return buffer.getvalue()
+
+
+@router.get("/api/extensions/captcha-worker/download")
+async def download_captcha_worker(
+    request: Request, token: str = Depends(verify_admin_token)
+):
+    """Package the bundled captcha extension so it can be loaded unpacked."""
+    if not _EXTENSIONS_DIR.is_dir():
+        raise HTTPException(status_code=404, detail="Extension directory not found")
+
+    forwarded_proto = (request.headers.get("x-forwarded-proto") or "").split(",")[0].strip()
+    scheme = forwarded_proto or request.url.scheme or "http"
+    ws_scheme = "wss" if scheme == "https" else "ws"
+    host = request.headers.get("host") or request.url.netloc or "127.0.0.1:8000"
+    server_url = f"{ws_scheme}://{host}/captcha_ws"
+    admin_config = await db.get_admin_config()
+
+    payload = _build_extension_zip(
+        _EXTENSIONS_DIR,
+        server_url=server_url,
+        api_key=(admin_config.api_key or "").strip(),
+    )
+
+    version = _read_extension_version(_EXTENSIONS_DIR)
+    filename = f"flow2api-captcha-worker-{version}.zip"
+    return Response(
+        content=payload,
+        media_type="application/zip",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
+
+@router.get("/api/captcha/extension/status")
+async def get_extension_status(token: str = Depends(verify_admin_token)):
+    """Live view of the captcha-worker bridge plus route-key diagnostics."""
+    from ..services.browser_captcha_extension import ExtensionCaptchaService
+
+    service = await ExtensionCaptchaService.get_instance(db)
+    admin_config = await db.get_admin_config()
+    status = service.get_status(configured_api_key=admin_config.api_key or "")
+
+    token_rows = await db.get_all_tokens_with_stats()
+    active_rows = [row for row in token_rows if row.get("is_active")]
+    token_routes = [
+        {
+            "token_id": row.get("id"),
+            "email": row.get("email"),
+            "extension_route_key": (row.get("extension_route_key") or "").strip(),
+        }
+        for row in active_rows
+    ]
+    status["token_routes"] = token_routes
+
+    warnings: List[str] = []
+    connected_keys = {conn["route_key"] for conn in status["connections"]}
+    for route in token_routes:
+        key = route["extension_route_key"]
+        if key and key not in connected_keys:
+            warnings.append(
+                f"Token #{route['token_id']} espera a route key '{key}', "
+                f"mas nenhuma extensão conectada usa essa chave."
+            )
+    for key in connected_keys:
+        if not key:
+            continue
+        if not any(route["extension_route_key"] == key for route in token_routes):
+            warnings.append(
+                f"A extensão conectada usa a route key '{key}', mas nenhum token ativo "
+                f"tem essa chave configurada."
+            )
+    if status["connected"] and not any(not key for key in connected_keys):
+        if any(not route["extension_route_key"] for route in token_routes):
+            warnings.append(
+                "Há token(s) sem route key, mas nenhuma extensão conectada com route key "
+                "vazia. Deixe o campo Route Key da extensão em branco."
+            )
+    status["warnings"] = warnings
+    return status
+
+
+class ExtensionTestRequest(BaseModel):
+    action: Literal["IMAGE_GENERATION", "VIDEO_GENERATION"] = "IMAGE_GENERATION"
+
+
+@router.post("/api/captcha/extension/test")
+async def test_extension(
+    request: ExtensionTestRequest = ExtensionTestRequest(),
+    token: str = Depends(verify_admin_token),
+):
+    """Ask the connected extension for a real token, end to end."""
+    from ..services.browser_captcha_extension import ExtensionCaptchaService
+
+    service = await ExtensionCaptchaService.get_instance(db)
+    if not service.active_connections:
+        raise HTTPException(
+            status_code=409,
+            detail="Nenhuma extensão conectada. Carregue a extensão e confira a API Key.",
+        )
+
+    token_rows = await db.get_all_tokens_with_stats()
+    active_rows = [row for row in token_rows if row.get("is_active")]
+    project_id = next(
+        (
+            str(row.get("current_project_id") or "").strip()
+            for row in active_rows
+            if str(row.get("current_project_id") or "").strip()
+        ),
+        "",
+    )
+    if not project_id:
+        raise HTTPException(
+            status_code=409,
+            detail="Nenhum token ativo com projeto. Gere uma imagem uma vez para criar o projeto.",
+        )
+
+    started_at = time.time()
+    try:
+        token_value = await service.get_token(
+            project_id,
+            request.action,
+            timeout=120,
+            token_id=active_rows[0].get("id") if active_rows else None,
+        )
+    except Exception as exc:
+        return {
+            "success": False,
+            "error": str(exc),
+            "duration_ms": int((time.time() - started_at) * 1000),
+        }
+
+    return {
+        "success": bool(token_value),
+        "error": "" if token_value else "A extensão não devolveu token",
+        "token_prefix": (token_value or "")[:12],
+        "project_id": project_id,
+        "action": request.action,
+        "duration_ms": int((time.time() - started_at) * 1000),
+    }
 
 
 @router.post("/api/tokens")

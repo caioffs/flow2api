@@ -166,6 +166,28 @@ Prometheus 可直接抓 `/metrics`。如果部署到 Kubernetes，建议只在�
 - 图生图 / 图生视频场景支持上传图片
 - 生成完成后直接预览图片或视频
 
+## 🧩 浏览器扩展 / Browser extensions
+
+管理后台右上角新增 **浏览器扩展**（`/extensions`）页面，用于安装并检查验证码扩展：
+
+- **直接下载**：点击按钮即可获取打包好的 `flow2api-captcha-worker-<版本>.zip`，无需手动找目录或压缩。
+- **自动配置**：下载的压缩包已经写入当前实例的 WebSocket 地址和 API Key，解压后 `加载已解压的扩展程序` 即可连接，不必再手抄密钥。
+- **实时状态**：页面每 5 秒刷新一次，显示是否已连接、Route Key、客户端名称以及当前使用的 API Key（带复制按钮）。
+- **一键自检**：`测试扩展` 会真的让扩展生成一个 reCAPTCHA token 并回报耗时，不用先生成图片才知道能不能用。
+- **诊断**：最近 20 次 token 请求的成败、耗时和错误会列在页面上；当扩展的 Route Key 与 Token 配置不匹配时会直接给出告警。
+
+令牌更新扩展（Cookie 同步）由第三方维护，未随本项目分发，页面只提供官方仓库链接。
+
+The admin console links to **Browser extensions** (`/extensions`), which installs and verifies the captcha extension:
+
+- **One-click download** of the packaged `flow2api-captcha-worker-<version>.zip`.
+- **Pre-configured archive**: the ZIP already carries this instance's WebSocket URL and API key, so loading it unpacked is enough — no key to copy by hand.
+- **Live status** every 5 seconds: connected or not, route key, client label, and the active API key with a copy button.
+- **One-click self-test**: `Test extension` asks the extension for a real reCAPTCHA token and reports the round-trip time.
+- **Diagnostics**: the last 20 token requests (result, duration, error) are listed, plus warnings when an extension route key does not match any token.
+
+The token updater extension is maintained by a third-party project and is not bundled; the page only links to its official repository.
+
 ## 🌐 界面语言 / Interface language
 
 登录页、管理后台和模型测试页均支持 **简体中文 / English**。使用页面右上角的语言选择器切换；首次访问会匹配浏览器语言，手动选择后保存在当前浏览器，跨页面及重新访问时继续生效。切换语言不会刷新页面，也不会清空表单、上传图片或中断生成任务。
@@ -178,11 +200,11 @@ The sign-in page, admin console, and model tester support **Simplified Chinese a
 
 API messages and errors honor `Accept-Language: zh-CN` or `Accept-Language: en` and return `Content-Language`. Unsupported languages fall back to Simplified Chinese. Account data, prompts, generated content, raw logs, and unknown upstream diagnostics remain unchanged. Generation results and SSE streams are passed through unchanged.
 
-翻译词典位于 `static/locales/`：`common.json` 为共享文案，`login.json` / `manage.json` / `test.json` 对应三个页面，`backend.json` 对应 API 提示。每个词典包含 `zh-CN` 和 `en`，使用原文作为消息键；新增译文时需保留 `{0}` 等占位符。
+翻译词典位于 `static/locales/`：`common.json` 为共享文案，`login.json` / `manage.json` / `test.json` / `extensions.json` 对应四个页面，`backend.json` 对应 API 提示。每个词典以 `zh-CN` 原文作为消息键；`extensions.json` 额外提供 `pt-BR`（葡萄牙语），新增译文时需保留 `{0}` 等占位符。
 
-Translation catalogs live in `static/locales/`. Each catalog contains `zh-CN` and `en` entries keyed by the source message. Keep interpolation placeholders such as `{0}` unchanged when editing translations.
+Translation catalogs live in `static/locales/`. Each catalog is keyed by the `zh-CN` source message. `extensions.json` additionally ships a `pt-BR` (Portuguese) block. Keep interpolation placeholders such as `{0}` unchanged when editing translations.
 
-扩展的词典位于 `extension/locales.json`。The extension catalog is `extension/locales.json`.
+扩展的词典位于 `extension/locales.json`，同样提供中英文。The extension catalog is `extension/locales.json` and also ships Simplified Chinese and English.
 
 ## 📋 支持的模型
 

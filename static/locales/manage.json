@@ -499,7 +499,9 @@
     "放大视频": "放大视频",
     "图片结果已返回": "图片结果已返回",
     "视频结果已返回": "视频结果已返回",
-    "操作类型:": "操作类型:"
+    "操作类型:": "操作类型:",
+    "浏览器扩展打码": "浏览器扩展打码",
+    "浏览器扩展": "浏览器扩展"
   },
   "en": {
     "管理控制台 - Flow2API": "Admin Console - Flow2API",
@@ -1001,6 +1003,8 @@
     "放大视频": "Upscale video",
     "图片结果已返回": "Image result returned",
     "视频结果已返回": "Video result returned",
-    "操作类型:": "Operation:"
+    "操作类型:": "Operation:",
+    "浏览器扩展打码": "Browser extension captcha",
+    "浏览器扩展": "Browser extensions"
   }
 }

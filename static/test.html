@@ -50,6 +50,17 @@ h1 { text-align: center; margin-bottom: 8px; font-size: 24px; color: #7c8aff; }
 }
 .tag-image { background: #1a3a2a; color: #4ade80; }
 .tag-video { background: #3a2a1a; color: #fb923c; }
+.model-item.locked { opacity: 0.45; }
+.model-item.locked:hover { background: #1e1f2e; }
+.model-locked-badge {
+  font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 500;
+  background: #3a1a2a; color: #f472b6; margin-left: 6px;
+}
+.model-locked-badge.hidden { display: none; }
+.model-tier-note {
+  font-size: 11px; color: #888; padding: 6px 12px; border-bottom: 1px solid #1e1f2e;
+}
+.model-tier-note.hidden { display: none; }
 
 .gen-panel {
   background: #1a1b26; border: 1px solid #2a2b3a; border-radius: 10px; padding: 20px;
@@ -310,16 +321,54 @@ const FALLBACK_MODELS = {
 };
 
 let ALL_MODELS = {};
+let MODEL_META = {};
+let ACCOUNT_TIER_LABEL = "";
 
 function applyFallbackModels(reason) {
   console.warn(I18n.t("使用内置候选模型列表:"), reason);
   ALL_MODELS = { ...FALLBACK_MODELS };
+  MODEL_META = {};
   renderSidebar();
+}
+
+function isModelAvailable(modelId) {
+  const meta = MODEL_META[modelId];
+  if (!meta) return true;
+  return meta.available !== false;
 }
 
 async function loadModels() {
   const baseUrl = (document.getElementById("baseUrl").value || "").trim();
   const apiKey = (document.getElementById("apiKey").value || "").trim();
+  try { localStorage.setItem("flow2api.test.baseUrl", baseUrl); } catch (_) {}
+  try { localStorage.setItem("flow2api.test.apiKey", apiKey); } catch (_) {}
+
+  // Preferred: the admin catalog knows which models the account can actually run,
+  // so the panel never sends a request Google would reject.
+  try {
+    const catalogResp = await fetch(`${baseUrl}/api/models/catalog`, {
+      headers: { ...I18n.headers() },
+      credentials: "same-origin"
+    });
+    if (catalogResp.ok) {
+      const catalog = await catalogResp.json();
+      const entries = Array.isArray(catalog.models) ? catalog.models : [];
+      if (entries.length) {
+        ALL_MODELS = {};
+        MODEL_META = {};
+        entries.forEach(m => {
+          ALL_MODELS[m.id] = m.description;
+          MODEL_META[m.id] = m;
+        });
+        ACCOUNT_TIER_LABEL = catalog.account_tier_label || "";
+        renderSidebar();
+        return;
+      }
+    }
+  } catch (e) {
+    console.warn("Model catalog unavailable, falling back to /v1/models", e);
+  }
+
   if (!baseUrl || !apiKey) {
     applyFallbackModels("missing_base_url_or_api_key");
     return;
@@ -338,6 +387,7 @@ async function loadModels() {
       return;
     }
     ALL_MODELS = {};
+    MODEL_META = {};
     items.forEach(m => { ALL_MODELS[m.id] = m.description; });
     renderSidebar();
   } catch (e) {
@@ -394,15 +444,32 @@ function renderSidebar() {
     const list = document.createElement("div");
     list.className = "model-list";
 
+    const locked = models.filter(modelId => !isModelAvailable(modelId));
+    if (locked.length && ACCOUNT_TIER_LABEL) {
+      const note = document.createElement("div");
+      note.className = "model-tier-note";
+      note.innerHTML = `${locked.length} 个模型需要更高等级账号（当前：${ACCOUNT_TIER_LABEL}）`;
+      list.appendChild(note);
+    }
+
     models.forEach(modelId => {
       const item = document.createElement("div");
       item.className = "model-item";
       item.dataset.model = modelId;
       item.classList.toggle("active", modelId === STATE.selectedModel);
+      const available = isModelAvailable(modelId);
+      if (!available) {
+        item.classList.add("locked");
+        const reason = (MODEL_META[modelId] || {}).reason || "当前账号不可用";
+        item.title = reason;
+      }
 
       const type = getModelType(modelId);
       const shortName = modelId.replace("gemini-3.1-flash-image-", "").replace("gemini-3.1-flash-lite-image-", "").replace("gemini-3.0-pro-image-", "");
-      item.innerHTML = `<span>${shortName}</span><span class="model-tag ${type === 'image' ? 'tag-image' : 'tag-video'}">${type === 'image' ? I18n.t("图片") : I18n.t("视频")}</span>`;
+      const lockBadge = available
+        ? ""
+        : `<span class="model-locked-badge">🔒 ${(MODEL_META[modelId] || {}).required_tier_label || "?"}</span>`;
+      item.innerHTML = `<span>${shortName}${lockBadge}</span><span class="model-tag ${type === 'image' ? 'tag-image' : 'tag-video'}">${type === 'image' ? I18n.t("图片") : I18n.t("视频")}</span>`;
       item.onclick = () => selectModel(modelId);
       list.appendChild(item);
     });
@@ -514,6 +581,12 @@ document.getElementById("btnGenerate").onclick = generate;
 
 async function generate() {
   if (!STATE.selectedModel || STATE.generating) return;
+
+  if (!isModelAvailable(STATE.selectedModel)) {
+    const meta = MODEL_META[STATE.selectedModel] || {};
+    alert(meta.reason || I18n.t("当前账号不可用该模型"));
+    return;
+  }
 
   const baseUrl = (document.getElementById("baseUrl").value || "").trim();
   const apiKey = (document.getElementById("apiKey").value || "").trim();
@@ -668,13 +741,40 @@ function renderResult(content) {
   }
 }
 
-// Auto-detect base URL
-(function() {
+// Auto-detect base URL and restore the saved API key.
+(async function() {
   const baseUrlInput = document.getElementById("baseUrl");
   const apiKeyInput = document.getElementById("apiKey");
   baseUrlInput.value = window.location.origin;
+  try {
+    const savedBase = localStorage.getItem("flow2api.test.baseUrl");
+    const savedKey = localStorage.getItem("flow2api.test.apiKey");
+    if (savedBase) baseUrlInput.value = savedBase;
+    if (savedKey) apiKeyInput.value = savedKey;
+  } catch (_) {}
   baseUrlInput.addEventListener("change", loadModels);
   apiKeyInput.addEventListener("change", loadModels);
+
+  // The panel already knows the API key; fill it in so the catalog loads and
+  // the user never has to hunt for it again.
+  if (!apiKeyInput.value) {
+    try {
+      const resp = await fetch(`${baseUrlInput.value}/api/admin/config`, {
+        headers: { ...I18n.headers() },
+        credentials: "same-origin"
+      });
+      if (resp.ok) {
+        const cfg = await resp.json();
+        if (cfg && cfg.api_key) {
+          apiKeyInput.value = cfg.api_key;
+          try { localStorage.setItem("flow2api.test.apiKey", cfg.api_key); } catch (_) {}
+        }
+      }
+    } catch (e) {
+      console.warn("Unable to auto-fill the API key", e);
+    }
+  }
+
   loadModels();
 })();
 
