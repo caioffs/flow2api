@@ -50,6 +50,7 @@ from ..core.account_tiers import (
 )
 from ..services.generation_handler import MODEL_CONFIG
 from ..services.flow_account import resolve_account_email
+from ..services.browser_cookie_utils import merge_cookie_storage
 from ..services.token_manager import TokenManager
 from ..services.proxy_manager import ProxyManager
 from ..services.concurrency_manager import ConcurrencyManager
@@ -2908,6 +2909,23 @@ async def test_captcha_score(
 # ========== Plugin Configuration Endpoints ==========
 
 
+def _log_plugin_sync_failure(cookies_raw: Any, error: Exception) -> None:
+    """Print which cookies the extension sent when a sync is rejected."""
+    try:
+        parsed = json.loads(cookies_raw)
+    except Exception:
+        parsed = []
+    pairs = sorted(
+        {
+            f"{item.get('name')}@{item.get('domain')}"
+            for item in parsed
+            if isinstance(item, dict) and item.get("name")
+        }
+    )
+    print(f"[plugin] sync rejected: {error}", flush=True)
+    print(f"[plugin] sync cookies n={len(pairs)}: {' '.join(pairs)}", flush=True)
+
+
 async def _verify_plugin_connection_token(authorization: Optional[str]) -> None:
     """Accept the plugin connection token or the panel API key.
 
@@ -3016,15 +3034,52 @@ async def plugin_update_token(
     await _verify_plugin_connection_token(authorization)
     plugin_config = await db.get_plugin_config()
 
-    google_cookies = request.google_cookies
+    incoming_cookies = request.google_cookies
+    google_cookies = incoming_cookies
     email = (request.login_account or "").strip().lower()
+
+    # Identify the account up front. Browsers do not always expose every cookie
+    # to an extension, so a later fallback can overlay what we already hold.
+    if not email:
+        email = (await resolve_account_email(incoming_cookies) or "").strip().lower()
+    existing_token = await db.get_token_by_email(email) if email else None
 
     try:
         result = await token_manager.flow_client.st_to_at(
             "",
-            google_cookies=google_cookies,
+            google_cookies=incoming_cookies,
         )
-        google_cookies = result.get("google_cookies") or google_cookies
+    except Exception as incoming_error:
+        merged_cookies = (
+            merge_cookie_storage(existing_token.google_cookies, incoming_cookies)
+            if existing_token is not None and existing_token.google_cookies
+            else None
+        )
+        if not merged_cookies:
+            _log_plugin_sync_failure(incoming_cookies, incoming_error)
+            raise HTTPException(
+                status_code=400,
+                detail=f"Google Cookie 验证失败：{str(incoming_error)}",
+            ) from incoming_error
+        try:
+            # Only fall back to the merged set when the browser's own cookies are
+            # rejected; never prefer a merge over a working incoming set.
+            result = await token_manager.flow_client.st_to_at(
+                "",
+                google_cookies=merged_cookies,
+            )
+            google_cookies = merged_cookies
+            print("[plugin] sync used merged cookies", flush=True)
+        except Exception as merged_error:
+            _log_plugin_sync_failure(incoming_cookies, merged_error)
+            raise HTTPException(
+                status_code=400,
+                detail=f"Google Cookie 验证失败：{str(merged_error)}",
+            ) from merged_error
+    else:
+        google_cookies = result.get("google_cookies") or incoming_cookies
+
+    try:
         at = result["access_token"]
         expires = result.get("expires")
         at_expires = None
@@ -3034,15 +3089,11 @@ async def plugin_update_token(
             except (TypeError, ValueError):
                 pass
     except Exception as cookie_error:
+        _log_plugin_sync_failure(google_cookies, cookie_error)
         raise HTTPException(
             status_code=400,
             detail=f"Google Cookie 验证失败：{str(cookie_error)}",
         ) from cookie_error
-
-    if not email:
-        # The extension does not need to know the account: the Flow page
-        # carries it in the bootstrap payload.
-        email = (await resolve_account_email(google_cookies) or "").strip().lower()
 
     cookie_hash = hashlib.sha256(google_cookies.encode("utf-8")).hexdigest()[:32]
     session_token = f"frontend-{cookie_hash}"

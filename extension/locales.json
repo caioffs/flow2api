@@ -23,13 +23,16 @@
     "Última sincronização: {0}": "Última sincronização: {0}",
     "Falha: {0}": "Falha: {0}",
     "Endereço inválido. Use algo como http://127.0.0.1:8000": "Endereço inválido. Use algo como http://127.0.0.1:8000",
-    "Salvo. Conectando...": "Salvo. Conectando...",
     "Informe a API Key.": "Informe a API Key.",
     "A sessão do Flow caiu. Entre em flow.google.com neste perfil do navegador.": "A sessão do Flow caiu. Entre em flow.google.com neste perfil do navegador.",
     "Cookies incompletos: faça login no Google e abra o Flow uma vez.": "Cookies incompletos: faça login no Google e abra o Flow uma vez.",
     "Já existe uma sincronização em andamento.": "Já existe uma sincronização em andamento.",
     "Não foi possível falar com o servidor. Confira o endereço.": "Não foi possível falar com o servidor. Confira o endereço.",
-    "O servidor recusou a sincronização.": "O servidor recusou a sincronização."
+    "O servidor recusou a sincronização.": "O servidor recusou a sincronização.",
+    "Conta pendente": "Conta pendente",
+    "Salvo. Sincronizando a conta...": "Salvo. Sincronizando a conta...",
+    "Lendo os cookies do navegador...": "Lendo os cookies do navegador...",
+    "Conta sincronizada: {0}": "Conta sincronizada: {0}"
   },
   "en": {
     "Flow2API Companion": "Flow2API Companion",
@@ -55,13 +58,16 @@
     "Última sincronização: {0}": "Last sync: {0}",
     "Falha: {0}": "Failed: {0}",
     "Endereço inválido. Use algo como http://127.0.0.1:8000": "Invalid address. Use something like http://127.0.0.1:8000",
-    "Salvo. Conectando...": "Saved. Connecting...",
     "Informe a API Key.": "Enter the API key.",
     "A sessão do Flow caiu. Entre em flow.google.com neste perfil do navegador.": "The Flow session is gone. Sign in to flow.google.com in this browser profile.",
     "Cookies incompletos: faça login no Google e abra o Flow uma vez.": "Incomplete cookies: sign in to Google and open Flow once.",
     "Já existe uma sincronização em andamento.": "A sync is already running.",
     "Não foi possível falar com o servidor. Confira o endereço.": "Could not reach the server. Check the address.",
-    "O servidor recusou a sincronização.": "The server rejected the sync."
+    "O servidor recusou a sincronização.": "The server rejected the sync.",
+    "Conta pendente": "Account pending",
+    "Salvo. Sincronizando a conta...": "Saved. Syncing the account...",
+    "Lendo os cookies do navegador...": "Reading browser cookies...",
+    "Conta sincronizada: {0}": "Account synced: {0}"
   },
   "zh-CN": {
     "Flow2API Companion": "Flow2API 助手",
@@ -87,12 +93,15 @@
     "Última sincronização: {0}": "上次同步：{0}",
     "Falha: {0}": "失败：{0}",
     "Endereço inválido. Use algo como http://127.0.0.1:8000": "地址无效。例如 http://127.0.0.1:8000",
-    "Salvo. Conectando...": "已保存，正在连接...",
     "Informe a API Key.": "请填写 API Key。",
     "A sessão do Flow caiu. Entre em flow.google.com neste perfil do navegador.": "Flow 登录态已失效。请在此浏览器配置中重新登录 flow.google.com。",
     "Cookies incompletos: faça login no Google e abra o Flow uma vez.": "Cookie 不完整：请登录 Google 并打开一次 Flow。",
     "Já existe uma sincronização em andamento.": "已有同步正在进行。",
     "Não foi possível falar com o servidor. Confira o endereço.": "无法连接服务器，请检查地址。",
-    "O servidor recusou a sincronização.": "服务器拒绝了同步。"
+    "O servidor recusou a sincronização.": "服务器拒绝了同步。",
+    "Conta pendente": "账号未同步",
+    "Salvo. Sincronizando a conta...": "已保存，正在同步账号...",
+    "Lendo os cookies do navegador...": "正在读取浏览器 Cookie...",
+    "Conta sincronizada: {0}": "账号已同步：{0}"
   }
 }

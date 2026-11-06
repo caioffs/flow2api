@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 import time
+from collections import OrderedDict
 from typing import Any, Dict, List, Optional
 from urllib.parse import unquote, urlparse
 
@@ -475,6 +476,31 @@ def serialize_cookie_header_for_url(
     return "; ".join(
         f"{name}={value}" for name, value in cookie_pairs_for_url(raw_cookie, target_url)
     )
+
+
+def merge_cookie_storage(existing_raw: Any, incoming_raw: Any) -> str:
+    """Overlay the incoming cookies on the existing set, keyed by name+domain+path.
+
+    Browsers do not always expose every cookie to an extension (some profiles
+    hide the legacy SID/HSID/APISID trio), so a full replacement would drop
+    cookies the server still needs. Incoming values always win.
+    """
+    def as_list(raw: Any) -> List[dict]:
+        if isinstance(raw, str):
+            try:
+                raw = json.loads(raw)
+            except (TypeError, ValueError):
+                return []
+        if not isinstance(raw, list):
+            return []
+        return [item for item in raw if isinstance(item, dict) and item.get("name")]
+
+    merged: "OrderedDict[tuple, dict]" = OrderedDict()
+    for item in as_list(existing_raw):
+        merged[(str(item.get("name")), str(item.get("domain") or ""), str(item.get("path") or "/"))] = item
+    for item in as_list(incoming_raw):
+        merged[(str(item.get("name")), str(item.get("domain") or ""), str(item.get("path") or "/"))] = item
+    return json.dumps(list(merged.values()), ensure_ascii=False)
 
 
 def validate_flow_cookie_storage(raw_cookie: Any) -> str:

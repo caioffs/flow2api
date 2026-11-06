@@ -477,10 +477,11 @@ async function syncCookies(reason = "manual") {
 
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
-            throw Object.assign(
-                new Error(payload.detail || `HTTP ${response.status}`),
-                { code: "http_error" }
-            );
+            const detail = String(payload.detail || `HTTP ${response.status}`);
+            // A 401 from the Flow RPC means the browser profile's Google session
+            // is stale or belongs to another account: nothing to overwrite.
+            const code = /code=401|401/.test(detail) ? "flow_session_stale" : "http_error";
+            throw Object.assign(new Error(detail), { code });
         }
 
         lastSync = {

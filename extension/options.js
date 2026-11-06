@@ -10,6 +10,7 @@ let translations = {};
 const STATUS_CODES = {
   missing_key: "Informe a API Key.",
   flow_session_lost: "A sessão do Flow caiu. Entre em flow.google.com neste perfil do navegador.",
+  flow_session_stale: "A sessão do Google neste perfil está desatualizada. Abra flow.google.com, entre de novo e sincronize.",
   cookies_incomplete: "Cookies incompletos: faça login no Google e abra o Flow uma vez.",
   already_running: "Já existe uma sincronização em andamento.",
   network_error: "Não foi possível falar com o servidor. Confira o endereço.",
@@ -61,6 +62,9 @@ function setPill(state) {
   if (state === "on") {
     pill.className = "pill on";
     pill.textContent = translate("Conectada");
+  } else if (state === "warn") {
+    pill.className = "pill warn";
+    pill.textContent = translate("Conta pendente");
   } else if (state === "off") {
     pill.className = "pill off";
     pill.textContent = translate("Desconectada");
@@ -74,10 +78,13 @@ function renderStatus(data) {
   const { settings, wsState, lastSync, syncing } = data;
 
   if (!settings.apiKey) setPill("nokey");
-  else if (wsState === 1) setPill("on");
+  else if (wsState === 1 && lastSync && lastSync.ok) setPill("on");
+  else if (wsState === 1) setPill("warn");
   else setPill("off");
 
-  if (lastSync && lastSync.at) {
+  if (syncing) {
+    // Keep the in-flight message visible; the poll must not overwrite it.
+  } else if (lastSync && lastSync.at) {
     if (lastSync.ok) {
       $("accountLine").textContent = lastSync.email || lastSync.message || translate("Sincronizado");
     } else {
@@ -140,20 +147,26 @@ async function save(showHint) {
     $("syncResult").textContent = translate("Informe a API Key.");
     return false;
   }
-  await chrome.runtime.sendMessage({
-    type: "save",
-    values: {
-      serverBase,
-      apiKey,
-      routeKey: $("routeKey").value.trim(),
-      clientLabel: $("clientLabel").value.trim(),
-      autoSyncEnabled: $("autoSync").checked,
-      autoSyncMinutes: Math.max(5, Number($("autoSyncMinutes").value) || 60)
-    }
-  });
+  try {
+    await chrome.runtime.sendMessage({
+      type: "save",
+      values: {
+        serverBase,
+        apiKey,
+        routeKey: $("routeKey").value.trim(),
+        clientLabel: $("clientLabel").value.trim(),
+        autoSyncEnabled: $("autoSync").checked,
+        autoSyncMinutes: Math.max(5, Number($("autoSyncMinutes").value) || 60)
+      }
+    });
+  } catch (e) {
+    $("syncResult").className = "hint err";
+    $("syncResult").textContent = translate("O servidor recusou a sincronização.");
+    return false;
+  }
   if (showHint) {
     $("syncResult").className = "hint ok";
-    $("syncResult").textContent = translate("Salvo. Conectando...");
+    $("syncResult").textContent = translate("Salvo. Sincronizando a conta...");
   }
   return true;
 }
@@ -161,18 +174,46 @@ async function save(showHint) {
 async function runSync() {
   const ok = await save(false);
   if (!ok) return;
-  $("syncBtn").disabled = true;
-  $("syncBtn").textContent = translate("Sincronizando...");
-  const result = await chrome.runtime.sendMessage({ type: "sync" });
-  if (result && !result.ok) {
-    const reason = STATUS_CODES[result.code] ? translate(STATUS_CODES[result.code]) : result.message;
-    $("syncResult").className = "hint err";
-    $("syncResult").textContent = translate("Falha: {0}", { "0": reason });
+
+  const syncBtn = $("syncBtn");
+  syncBtn.disabled = true;
+  syncBtn.textContent = translate("Sincronizando...");
+  $("syncResult").className = "hint";
+  $("syncResult").textContent = translate("Lendo os cookies do navegador...");
+
+  let result = null;
+  try {
+    result = await chrome.runtime.sendMessage({ type: "sync" });
+  } catch (e) {
+    result = { ok: false, code: "network_error", message: String(e) };
   }
+
+  if (!result || !result.ok) {
+    const code = (result && result.code) || "network_error";
+    let text = STATUS_CODES[code] ? translate(STATUS_CODES[code]) : "";
+    const detail = (result && result.message) || "";
+    if (detail && detail !== text) {
+      text = text ? text + " — " + detail : detail;
+    }
+    $("syncResult").className = "hint err";
+    $("syncResult").textContent = translate("Falha: {0}", { "0": text });
+  } else if (result.email) {
+    $("syncResult").className = "hint ok";
+    $("syncResult").textContent = translate("Conta sincronizada: {0}", { "0": result.email });
+  } else {
+    $("syncResult").className = "hint ok";
+    $("syncResult").textContent = result.message || translate("Sincronizado");
+  }
+  syncBtn.disabled = false;
+  syncBtn.textContent = translate("Sincronizar agora");
   refresh();
 }
 
-$("saveBtn").addEventListener("click", () => save(true));
+async function connectAndSync() {
+  await runSync();
+}
+
+$("saveBtn").addEventListener("click", connectAndSync);
 $("syncBtn").addEventListener("click", runSync);
 $("autoSync").addEventListener("change", () => save(false));
 $("autoSyncMinutes").addEventListener("change", () => save(false));
