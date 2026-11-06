@@ -136,7 +136,7 @@ h1 { text-align: center; margin-bottom: 8px; font-size: 24px; color: #7c8aff; }
 </head>
 <body>
 <div class="container">
-  <div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><select data-language-select aria-label="Language" style="padding:6px 10px;border-radius:6px;border:1px solid #2a2b3a;background:#1a1b26;color:#e1e1e6;"><option value="zh-CN">中文</option><option value="en">English</option></select></div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:12px;"><select data-language-select aria-label="Language" style="padding:6px 10px;border-radius:6px;border:1px solid #2a2b3a;background:#1a1b26;color:#e1e1e6;"><option value="zh-CN">中文</option><option value="en">English</option><option value="pt-BR">Português</option></select></div>
   <h1><span data-i18n="🧪 Flow2API 模型测试">🧪 Flow2API 模型测试</span></h1>
   <p class="subtitle"><span data-i18n="选择模型，输入提示词，测试生成效果">选择模型，输入提示词，测试生成效果</span></p>
 
@@ -157,7 +157,7 @@ h1 { text-align: center; margin-bottom: 8px; font-size: 24px; color: #7c8aff; }
 
         <div class="form-group">
           <label><span data-i18n="提示词 (Prompt)">提示词 (Prompt)</span></label>
-          <textarea id="promptInput" placeholder="描述你想生成的内容..." data-i18n-placeholder="描述你想生成的内容...">一只可爱的橘猫趴在窗台上晒太阳，窗外是樱花盛开的春天</textarea>
+          <textarea id="promptInput" placeholder="描述你想生成的内容..." data-i18n-placeholder="描述你想生成的内容..."></textarea>
         </div>
 
         <div class="form-group" id="videoSourceGroup" style="display:none;">
@@ -448,7 +448,9 @@ function renderSidebar() {
     if (locked.length && ACCOUNT_TIER_LABEL) {
       const note = document.createElement("div");
       note.className = "model-tier-note";
-      note.innerHTML = `${locked.length} 个模型需要更高等级账号（当前：${ACCOUNT_TIER_LABEL}）`;
+      I18n.setRawText(note, I18n.t("{0} 个模型需要更高等级账号（当前：{1}）", {
+        "0": locked.length, "1": ACCOUNT_TIER_LABEL
+      }));
       list.appendChild(note);
     }
 
@@ -741,6 +743,20 @@ function renderResult(content) {
   }
 }
 
+// Example prompt, translated. It is only (re)applied while the field still
+// holds the previous default, so a typed prompt is never overwritten.
+const DEFAULT_PROMPT_KEY = "一只可爱的橘猫趴在窗台上晒太阳，窗外是樱花盛开的春天";
+function applyDefaultPrompt() {
+  const input = document.getElementById("promptInput");
+  if (!input) return;
+  const current = input.value.trim();
+  const previous = (input.dataset.lastDefault || "").trim();
+  if (current && current !== previous) return;
+  const text = I18n.t(DEFAULT_PROMPT_KEY);
+  input.value = text;
+  input.dataset.lastDefault = text;
+}
+
 // Auto-detect base URL and restore the saved API key.
 (async function() {
   const baseUrlInput = document.getElementById("baseUrl");
@@ -775,11 +791,13 @@ function renderResult(content) {
     }
   }
 
+  applyDefaultPrompt();
   loadModels();
 })();
 
 
 window.addEventListener('languagechange', () => {
+  applyDefaultPrompt();
   const collapsed = new Set(Array.from(document.querySelectorAll('.section-title.collapsed'), title => title.dataset.category));
   renderSidebar();
   document.querySelectorAll('.section-title').forEach(title => {

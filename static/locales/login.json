@@ -22,5 +22,17 @@
     "登录中...": "Signing in...",
     "登录失败": "Sign-in failed",
     "网络错误,请稍后重试": "Network error. Please try again later."
+  },
+  "pt-BR": {
+    "登录 - Flow2API": "Entrar - Flow2API",
+    "管理员控制台": "Painel administrativo",
+    "账户": "Usuário",
+    "请输入账户": "Digite seu usuário",
+    "密码": "Senha",
+    "请输入密码": "Digite sua senha",
+    "登录": "Entrar",
+    "登录中...": "Entrando...",
+    "登录失败": "Falha no login",
+    "网络错误,请稍后重试": "Erro de rede. Tente novamente mais tarde."
   }
 }

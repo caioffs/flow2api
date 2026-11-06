@@ -2260,7 +2260,11 @@ async def update_cache_enabled(request: dict, token: str = Depends(verify_admin_
     await db.reload_config_to_memory()
     await _sync_runtime_cache_config()
 
-    return {"success": True, "message": f"缓存已{'启用' if enabled else '禁用'}"}
+    # Send the whole message through the catalog so every language renders it.
+    return {
+        "success": True,
+        "message": "缓存已启用" if enabled else "缓存已禁用",
+    }
 
 
 @router.post("/api/cache/config")
