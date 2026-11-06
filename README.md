@@ -188,6 +188,20 @@ The admin console links to **Browser extensions** (`/extensions`), which install
 
 The token updater extension is maintained by a third-party project and is not bundled; the page only links to its official repository.
 
+## 🎨 界面风格 / Design system
+
+四个页面共用一套设计变量，定义在 `static/theme.css`：奶油纸底色 `#fdfbf9`、炭黑墨色 `#171717`、唯一的马克笔橙 `#ff6f1e`，以及 Dew Drop 次级表面 `#f7efe9`。圆角固定为卡片 12px、输入 8px、按钮 20px 胶囊。阴影只有两级且都非常轻。
+
+标题使用 Fraunces（gelica 的替代），正文与界面使用 Inter（Geist 的替代），两者来自 Google Fonts，离线时回退到系统字体。
+
+登录页与管理后台通过 `tailwind.config` 的语义色（background / card / border / muted / accent / primary / destructive）映射到同一套变量；模型测试页与浏览器扩展页直接引用 CSS 变量。只改 `theme.css` 的 `:root` 即可整体换色，页面本身无需改动。
+
+Every page shares one token set in `static/theme.css`: cream paper `#fdfbf9`, charcoal ink `#171717`, a single marker-orange accent `#ff6f1e`, and Dew Drop `#f7efe9` as the secondary surface. Radii are fixed at 12px for cards, 8px for inputs and 20px for pill buttons, and only two whisper-light shadows exist.
+
+Headlines use Fraunces (the gelica substitute) and body copy uses Inter (the Geist substitute). Both load from Google Fonts and fall back to system fonts offline.
+
+The login page and admin console map their Tailwind semantic colours onto the same tokens, while the model tester and extensions pages consume the CSS variables directly. Recolouring the app means editing `:root` in `theme.css` only — no page markup changes.
+
 ## 🌐 界面语言 / Interface language
 
 登录页、管理后台、模型测试页和浏览器扩展页均支持 **简体中文 / English / Português (pt-BR)**。使用页面右上角的语言选择器切换；首次访问会匹配浏览器语言，手动选择后保存在当前浏览器，跨页面及重新访问时继续生效。切换语言不会刷新页面，也不会清空表单、上传图片或中断生成任务。

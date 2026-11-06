@@ -5,98 +5,90 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title data-i18n="扩展与连接">扩展与连接</title>
 <script src="/static/i18n.js"></script>
+<link rel="stylesheet" href="/static/theme.css">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #0f1117; color: #e1e1e6; min-height: 100vh; line-height: 1.5;
+  font-family: var(--font-ui);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  line-height: 1.55;
 }
-.container { max-width: 980px; margin: 0 auto; padding: 24px 20px 60px; }
-.topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
-h1 { font-size: 24px; color: #7c8aff; margin-bottom: 4px; }
-.subtitle { color: #7f8498; font-size: 14px; }
-.nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.container { max-width: 980px; margin: 0 auto; padding: 28px 24px 64px; }
+.topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: 30px; line-height: 1.15; color: var(--cocoa); margin-bottom: 6px; }
+.subtitle { color: var(--muted); font-size: 14px; }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 .nav a {
-  font-size: 12px; color: #9aa0b4; text-decoration: none; padding: 5px 10px;
-  border: 1px solid #2a2b3a; border-radius: 6px; background: #1a1b26;
+  font-size: 12px; font-weight: 500; color: var(--cocoa); text-decoration: none; padding: 6px 14px;
+  border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: var(--paper);
+  transition: background-color .15s, border-color .15s;
 }
-.nav a:hover { color: #7c8aff; border-color: #3d3f52; }
-select {
-  background: #1a1b26; color: #e1e1e6; border: 1px solid #2a2b3a;
-  border-radius: 6px; padding: 6px 10px; font-size: 13px;
-}
+.nav a:hover { background: var(--dew); border-color: var(--ink); }
+select { width: auto; }
 
-.card {
-  background: #1a1b26; border: 1px solid #2a2b3a; border-radius: 12px;
-  padding: 20px; margin-bottom: 18px;
-}
-.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
-h2 { font-size: 16px; color: #e1e1e6; }
-h3 { font-size: 13px; color: #9aa0b4; margin: 18px 0 8px; text-transform: uppercase; letter-spacing: .04em; }
-.card p.lead { color: #7f8498; font-size: 13px; margin-bottom: 14px; }
+.card { padding: 24px; margin-bottom: 18px; }
+.card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+h2 { font-size: 17px; font-family: var(--font-display); font-weight: 600; color: var(--cocoa); }
+h3 { font-size: 12px; color: var(--muted); margin: 20px 0 8px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.card p.lead { color: var(--muted); font-size: 13.5px; margin-bottom: 16px; }
 
-.pill {
-  font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px;
-  white-space: nowrap;
+.detail { font-size: 13px; color: var(--muted); }
+.detail code {
+  color: var(--cocoa); background: var(--dew); padding: 2px 7px; border-radius: 6px;
+  font-family: var(--font-mono); font-size: 12.5px;
 }
-.pill-on { background: #12331f; color: #4ade80; border: 1px solid #1f5133; }
-.pill-off { background: #33161c; color: #f87171; border: 1px solid #5a2430; }
-.pill-wait { background: #2a2b3a; color: #9aa0b4; border: 1px solid #3d3f52; }
-
-.detail { font-size: 13px; color: #9aa0b4; }
-.detail code { color: #e1e1e6; background: #0f1117; padding: 1px 6px; border-radius: 4px; }
-.detail .sep { color: #3d3f52; margin: 0 8px; }
+.detail .sep { color: var(--line-strong); margin: 0 10px; }
 
 .keyrow {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-  margin: 16px 0 4px; padding: 12px 14px; background: #0f1117;
-  border: 1px dashed #3d3f52; border-radius: 8px;
+  margin: 18px 0 6px; padding: 14px 16px; background: var(--dew);
+  border: 1px dashed var(--line-strong); border-radius: var(--radius-card);
 }
-.keyrow .label { font-size: 12px; color: #9aa0b4; }
+.keyrow .label { font-size: 12.5px; color: var(--muted); font-weight: 500; }
 .keyrow code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px;
-  color: #fbbf24; letter-spacing: .03em; word-break: break-all;
+  font-family: var(--font-mono); font-size: 14px; color: var(--sienna);
+  letter-spacing: .03em; word-break: break-all;
 }
 
-.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-.btn {
-  font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 8px;
-  border: 1px solid transparent; cursor: pointer; text-decoration: none; display: inline-block;
-}
-.btn-primary { background: #4f46e5; color: #fff; }
-.btn-primary:hover { background: #5b52f0; }
-.btn-primary:disabled { background: #2f2a6b; color: #9a94d4; cursor: progress; }
-.btn-ghost { background: #232433; color: #c7cbd8; border-color: #2a2b3a; }
-.btn-ghost:hover { background: #2b2c3d; }
-.btn-download { background: #15803d; color: #fff; }
-.btn-download:hover { background: #16a34a; }
-.btn[disabled], .btn-download[disabled] { opacity: .55; pointer-events: none; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
 
-.warnings { margin-top: 14px; display: grid; gap: 8px; }
+.warnings { margin-top: 16px; display: grid; gap: 8px; }
 .warning {
-  font-size: 13px; color: #fbbf24; background: #2a2313;
-  border: 1px solid #57451a; border-radius: 8px; padding: 10px 12px;
+  font-size: 13px; color: #9a5209; background: #fff3e2;
+  border: 1px solid #f0d2a8; border-radius: var(--radius-card); padding: 11px 14px;
 }
-.testresult { margin-top: 12px; font-size: 13px; display: none; }
+.testresult { margin-top: 14px; font-size: 13px; display: none; }
 .testresult.show { display: block; }
-.testresult.ok { color: #4ade80; }
-.testresult.err { color: #f87171; }
+.testresult.ok { color: #2f7d3a; }
+.testresult.err { color: #a8450a; }
 
 table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid #23243300; }
-thead th { color: #7f8498; font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
-tbody tr { border-bottom: 1px solid #232433; }
+th, td { text-align: left; padding: 8px 10px; }
+thead th {
+  color: var(--muted); font-weight: 600; font-size: 10.5px;
+  text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--line);
+}
+tbody tr { border-bottom: 1px solid var(--line); }
 tbody tr:last-child { border-bottom: none; }
-td.ok { color: #4ade80; }
-td.err { color: #f87171; }
-td.mono, th.mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-.empty { color: #5d6275; font-size: 13px; padding: 8px 0; }
+td.ok { color: #2f7d3a; font-weight: 500; }
+td.err { color: #a8450a; font-weight: 500; }
+td.mono, th.mono { font-family: var(--font-mono); }
+.empty { color: var(--mist); font-size: 13px; padding: 10px 0; }
 
-ol { margin: 8px 0 0 18px; font-size: 13px; color: #b8bccb; }
-ol li { margin-bottom: 7px; }
-ol code { color: #e1e1e6; background: #0f1117; padding: 1px 6px; border-radius: 4px; }
-.note { font-size: 12.5px; color: #7f8498; margin-top: 10px; }
-a.ext { color: #7c8aff; }
+ol { margin: 10px 0 0 20px; font-size: 13.5px; color: #4a3c2e; }
+ol li { margin-bottom: 8px; }
+ol code {
+  color: var(--cocoa); background: var(--dew); padding: 2px 6px; border-radius: 6px;
+  font-family: var(--font-mono); font-size: 12.5px;
+}
+.note { font-size: 12.5px; color: var(--muted); margin-top: 12px; }
+a.ext { color: var(--sienna); }
+
+@media (max-width: 640px) {
+  .topbar { flex-direction: column; }
+}
 </style>
 </head>
 <body>
@@ -120,7 +112,7 @@ a.ext { color: #7c8aff; }
   <section class="card">
     <div class="card-head">
       <h2 data-i18n="打码扩展连接状态">打码扩展连接状态</h2>
-      <span id="statusPill" class="pill pill-wait" data-i18n="检查中...">检查中...</span>
+      <span id="statusPill" class="pill tag-idle" data-i18n="检查中...">检查中...</span>
     </div>
     <div id="connDetail" class="detail"></div>
 
@@ -144,10 +136,10 @@ a.ext { color: #7c8aff; }
   <section class="card">
     <div class="card-head">
       <h2 data-i18n="打码扩展">打码扩展</h2>
-      <span id="extVersion" class="pill pill-wait">v—</span>
+      <span id="extVersion" class="pill tag-idle">v—</span>
     </div>
     <p class="lead" data-i18n="用你自己登录的浏览器生成 reCAPTCHA token，不需要第三方打码服务。">用你自己登录的浏览器生成 reCAPTCHA token，不需要第三方打码服务。</p>
-    <a id="downloadExt" class="btn btn-download" href="/api/extensions/captcha-worker/download" data-i18n="下载打码扩展">下载打码扩展</a>
+    <a id="downloadExt" class="btn" href="/api/extensions/captcha-worker/download" data-i18n="下载打码扩展">下载打码扩展</a>
 
     <h3 data-i18n="安装步骤">安装步骤</h3>
     <ol>

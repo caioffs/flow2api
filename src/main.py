@@ -325,6 +325,16 @@ async def i18n_script():
     )
 
 
+@app.get("/static/theme.css", include_in_schema=False)
+async def theme_stylesheet():
+    """Shared design tokens and components for every console page."""
+    return FileResponse(
+        str(static_path / "theme.css"),
+        media_type="text/css",
+        headers=_STATIC_PAGE_NO_CACHE_HEADERS,
+    )
+
+
 @app.get("/", response_class=HTMLResponse)
 async def index():
     """Redirect to login page"""

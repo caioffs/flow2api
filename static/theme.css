@@ -1,0 +1,366 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap");
+
+/* ==========================================================================
+   Flow2API — Superr design system
+   Warm schoolyard notebook: cream paper, charcoal ink, one marker orange.
+   Single source of truth for every page (login, manage, test, extensions).
+   ========================================================================== */
+
+:root {
+  /* Colors */
+  --paper: #fdfbf9;          /* canvas */
+  --card: #fffdfa;           /* raised surface */
+  --dew: #f7efe9;            /* secondary surface tint */
+  --ink: #171717;            /* the only "ink" colour: text, borders, strokes */
+  --cocoa: #2b1a07;          /* headlines, warm dark */
+  --marker: #ff6f1e;         /* signature accent */
+  --sienna: #ce500a;         /* danger / weightier orange */
+  --sprout: #22c55e;         /* success, tags */
+  --muted: #8a7663;          /* secondary text on cream */
+  --line: #e2d8ca;           /* hairline separator */
+  --line-strong: #cdbfae;    /* component outline */
+  --mist: #bebcbb;
+
+  /* Typography */
+  --font-ui: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Fraunces", "Recoleta", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Radii */
+  --radius-input: 8px;
+  --radius-card: 12px;
+  --radius-pill: 20px;
+  --radius-band: 56px;
+
+  /* Shadows — whisper light */
+  --shadow-lg: rgba(0, 0, 0, 0.06) 0px 2px 20px 0px;
+  --shadow-subtle: rgba(0, 0, 0, 0.25) 0px 1px 2px 0px;
+
+  /* Spacing */
+  --gap: 12px;
+  --card-padding: 32px;
+  --page-max: 1200px;
+}
+
+/* --- Base ---------------------------------------------------------------- */
+
+body,
+body.bg-background {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+.page-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--cocoa);
+  letter-spacing: 0;
+}
+
+::selection {
+  background: #ffe0c7;
+  color: var(--cocoa);
+}
+
+:focus-visible {
+  outline: 2px solid var(--marker);
+  outline-offset: 2px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* --- Shared components --------------------------------------------------- */
+
+.surface,
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 11px 22px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--shadow-subtle);
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+
+.btn:hover {
+  background: var(--dew);
+}
+
+.btn:disabled,
+.btn[disabled] {
+  opacity: .55;
+  cursor: progress;
+}
+
+.btn-primary {
+  background: var(--marker);
+  border-color: var(--marker);
+  color: #fff8f2;
+}
+
+.btn-primary:hover {
+  background: var(--sienna);
+  border-color: var(--sienna);
+}
+
+.btn-ghost {
+  background: transparent;
+  border-color: var(--line-strong);
+  box-shadow: none;
+  color: var(--cocoa);
+}
+
+.btn-ghost:hover {
+  background: var(--dew);
+  border-color: var(--ink);
+}
+
+.field,
+.input,
+input[type="text"],
+input[type="password"],
+input[type="number"],
+input[type="url"],
+select,
+textarea {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-input);
+  padding: 9px 12px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--mist);
+}
+
+.field:focus,
+.input:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--marker);
+  box-shadow: 0 0 0 3px rgba(255, 111, 30, .16);
+}
+
+.tag,
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line-strong);
+  color: var(--cocoa);
+  background: var(--dew);
+  white-space: nowrap;
+}
+
+.tag-ok,
+.pill-on {
+  background: #edf7ee;
+  border-color: #bfe0c6;
+  color: #266631;
+}
+
+.tag-warn {
+  background: #fff3e2;
+  border-color: #f0d2a8;
+  color: #9a5209;
+}
+
+.tag-danger,
+.pill-off {
+  background: #fdeee6;
+  border-color: #f0c6b0;
+  color: #a8450a;
+}
+
+.tag-idle,
+.pill-wait {
+  background: var(--dew);
+  border-color: var(--line-strong);
+  color: var(--muted);
+}
+
+/* Data tables */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table thead th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.table tbody td {
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  vertical-align: top;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover td {
+  background: var(--dew);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Marker underline used on emphasis words */
+.marker {
+  color: var(--marker);
+  background-image: linear-gradient(var(--marker), var(--marker));
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-position: 0 100%;
+  padding-bottom: 1px;
+}
+
+/* The wordmark and page headlines carry the display face. */
+.brand {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--cocoa);
+  letter-spacing: -0.01em;
+}
+
+/* Elevation stays whisper-light everywhere, whatever the utility class. */
+.shadow-sm { box-shadow: var(--shadow-subtle) !important; }
+.shadow,
+.shadow-md,
+.shadow-lg,
+.shadow-xl,
+.shadow-2xl { box-shadow: var(--shadow-lg) !important; }
+
+/* Buttons and links are pills; inputs keep the tighter 8px corner. */
+button.rounded-md,
+button.rounded-lg,
+a.rounded-md,
+a.rounded-lg {
+  border-radius: var(--radius-pill) !important;
+}
+
+/* ==========================================================================
+   Tailwind palette harmonisation.
+   The console markup uses a handful of raw Tailwind colours; remap them onto
+   the Superr palette so no blue/pink leaks into the interface.
+   ========================================================================== */
+
+.bg-white { background-color: var(--card) !important; }
+.bg-black\/80 { background-color: rgba(43, 26, 7, .62) !important; }
+.bg-black { background-color: var(--cocoa) !important; }
+
+.bg-gray-50 { background-color: var(--paper) !important; }
+.bg-gray-100 { background-color: var(--dew) !important; }
+.bg-gray-200 { background-color: #efe6db !important; }
+.bg-gray-900 { background-color: var(--cocoa) !important; }
+.text-gray-700 { color: #6b5b4a !important; }
+
+.bg-slate-50 { background-color: var(--paper) !important; }
+.bg-slate-100 { background-color: var(--dew) !important; }
+.border-slate-200 { border-color: var(--line) !important; }
+.text-slate-700 { color: #6b5b4a !important; }
+
+.bg-blue-50 { background-color: var(--dew) !important; }
+.bg-blue-100 { background-color: #f0e4d8 !important; }
+.bg-blue-600 { background-color: var(--marker) !important; }
+.bg-blue-700 { background-color: var(--sienna) !important; }
+.bg-blue-900\/20 { background-color: rgba(43, 26, 7, .12) !important; }
+.border-blue-200 { border-color: var(--line-strong) !important; }
+.border-blue-800 { border-color: #b9a894 !important; }
+.text-blue-200 { color: #cdbfae !important; }
+.text-blue-600,
+.text-blue-700,
+.text-blue-800 { color: #a8450a !important; }
+
+.bg-red-50 { background-color: #fdeee6 !important; }
+.border-red-200 { border-color: #f0c6b0 !important; }
+.text-red-500 { color: #c2551f !important; }
+.text-red-600,
+.text-red-700 { color: #a8450a !important; }
+
+.bg-green-50 { background-color: #edf7ee !important; }
+.bg-green-600 { background-color: #2f7d3a !important; }
+.bg-green-700 { background-color: #266631 !important; }
+.border-green-200 { border-color: #bfe0c6 !important; }
+.text-green-600,
+.text-green-700 { color: #2f7d3a !important; }
+
+.bg-amber-50 { background-color: #fff3e2 !important; }
+.text-amber-300 { color: #e8b071 !important; }
+.text-amber-700 { color: #9a5209 !important; }
+.text-orange-600 { color: var(--sienna) !important; }
+
+.bg-yellow-50 { background-color: #fff6e0 !important; }
+.bg-yellow-900\/20 { background-color: rgba(120, 84, 12, .14) !important; }
+.border-yellow-200 { border-color: #f0dfab !important; }
+.border-yellow-800 { border-color: #c9a84c !important; }
+.text-yellow-200 { color: #f2e2b3 !important; }
+.text-yellow-800 { color: #7a5a12 !important; }
+
+.bg-purple-50 { background-color: var(--dew) !important; }
+.text-purple-600,
+.text-purple-700 { color: #7a4a2a !important; }
+
+.bg-indigo-50 { background-color: var(--dew) !important; }
+.text-indigo-700 { color: #7a4a2a !important; }

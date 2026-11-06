@@ -13,18 +13,19 @@
         .line-clamp-2{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
     </style>
     <script>
-        tailwind.config={theme:{extend:{colors:{border:"hsl(0 0% 89%)",input:"hsl(0 0% 89%)",ring:"hsl(0 0% 3.9%)",background:"hsl(0 0% 100%)",foreground:"hsl(0 0% 3.9%)",primary:{DEFAULT:"hsl(0 0% 9%)",foreground:"hsl(0 0% 98%)"},secondary:{DEFAULT:"hsl(0 0% 96.1%)",foreground:"hsl(0 0% 9%)"},muted:{DEFAULT:"hsl(0 0% 96.1%)",foreground:"hsl(0 0% 45.1%)"},destructive:{DEFAULT:"hsl(0 84.2% 60.2%)",foreground:"hsl(0 0% 98%)"}}}}}
+tailwind.config={theme:{extend:{colors:{border:"#e2d8ca",input:"#cdbfae",ring:"#ff6f1e",background:"#fdfbf9",foreground:"#171717",card:{DEFAULT:"#fffdfa",foreground:"#171717"},popover:{DEFAULT:"#fffdfa",foreground:"#171717"},primary:{DEFAULT:"#2b1a07",foreground:"#fdfbf9"},secondary:{DEFAULT:"#f7efe9",foreground:"#2b1a07"},muted:{DEFAULT:"#f7efe9",foreground:"#8a7663"},accent:{DEFAULT:"#ffe7d6",foreground:"#2b1a07"},destructive:{DEFAULT:"#ce500a",foreground:"#fff8f2"}},fontFamily:{sans:["Inter","ui-sans-serif","system-ui","-apple-system","BlinkMacSystemFont","Segoe UI","Roboto","sans-serif"],display:["Fraunces","Recoleta","Georgia","serif"]},borderRadius:{md:"8px",lg:"12px",xl:"16px"},borderColor:{DEFAULT:"#e2d8ca"}}}}
     </script>
-</head>
+    <link rel="stylesheet" href="/static/theme.css">
+    </head>
 <body class="h-full bg-background text-foreground antialiased">
     <!-- 导航栏 -->
     <header class="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur">
         <div class="mx-auto flex h-14 max-w-7xl items-center px-6">
             <div class="mr-4 flex items-baseline gap-3">
-                <span class="font-bold text-xl">Flow2API</span>
+                <span class="brand font-bold text-xl">Flow2API</span>
             </div>
             <div class="flex flex-1 items-center justify-end gap-3">
-                <select data-language-select aria-label="Language" class="h-8 rounded-md border border-input bg-background px-2 text-xs"><option value="zh-CN">中文</option><option value="en">English</option><option value="pt-BR">Português</option></select>
+                <select data-language-select aria-label="Language" class="h-8 rounded-md border border-input bg-card px-2 text-xs"><option value="zh-CN">中文</option><option value="en">English</option><option value="pt-BR">Português</option></select>
                 <a href="https://github.com/TheSmallHanCat/flow2api" target="_blank" class="inline-flex items-center justify-center text-xs transition-colors hover:bg-accent hover:text-accent-foreground h-7 px-2.5" title="GitHub 仓库" data-i18n-title="GitHub 仓库">
                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
@@ -58,30 +59,30 @@
         <div id="panelTokens">
             <!-- 统计卡片 -->
             <div class="grid gap-4 grid-cols-2 md:grid-cols-5 mb-6">
-                <div class="rounded-lg border border-border bg-background p-4">
+                <div class="rounded-lg border border-border bg-card p-4">
                     <p class="text-sm font-medium text-muted-foreground mb-2"><span data-i18n="Token 总数">Token 总数</span></p>
                     <h3 class="text-xl font-bold" id="statTotal">-</h3>
                 </div>
-                <div class="rounded-lg border border-border bg-background p-4">
+                <div class="rounded-lg border border-border bg-card p-4">
                     <p class="text-sm font-medium text-muted-foreground mb-2"><span data-i18n="活跃 Token">活跃 Token</span></p>
                     <h3 class="text-xl font-bold text-green-600" id="statActive">-</h3>
                 </div>
-                <div class="rounded-lg border border-border bg-background p-4">
+                <div class="rounded-lg border border-border bg-card p-4">
                     <p class="text-sm font-medium text-muted-foreground mb-2"><span data-i18n="今日图片/总图片">今日图片/总图片</span></p>
                     <h3 class="text-xl font-bold text-blue-600" id="statImages">-</h3>
                 </div>
-                <div class="rounded-lg border border-border bg-background p-4">
+                <div class="rounded-lg border border-border bg-card p-4">
                     <p class="text-sm font-medium text-muted-foreground mb-2"><span data-i18n="今日视频/总视频">今日视频/总视频</span></p>
                     <h3 class="text-xl font-bold text-purple-600" id="statVideos">-</h3>
                 </div>
-                <div class="rounded-lg border border-border bg-background p-4">
+                <div class="rounded-lg border border-border bg-card p-4">
                     <p class="text-sm font-medium text-muted-foreground mb-2"><span data-i18n="今日错误/总错误">今日错误/总错误</span></p>
                     <h3 class="text-xl font-bold text-destructive" id="statErrors">-</h3>
                 </div>
             </div>
 
             <!-- Token 列表 -->
-            <div class="rounded-lg border border-border bg-background">
+            <div class="rounded-lg border border-border bg-card">
                 <div class="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-border">
                     <h3 class="text-lg font-semibold"><span data-i18n="Token 列表">Token 列表</span></h3>
                     <div class="flex flex-wrap items-center gap-3">
@@ -103,8 +104,8 @@
                         <!-- 全局刷新间隔 -->
                         <div class="flex items-center gap-2" title="立即把所有账号的 Cookie 刷新周期改成该值" data-i18n-title="立即把所有账号的 Cookie 刷新周期改成该值">
                             <span class="text-xs text-muted-foreground"><span data-i18n="刷新间隔(分钟)">刷新间隔(分钟)</span></span>
-                            <input id="globalRefreshIntervalMinutes" type="number" min="1" max="10080" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm">
-                            <button onclick="applyGlobalRefreshInterval()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-8 px-3 text-xs"><span data-i18n="应用到全部">应用到全部</span></button>
+                            <input id="globalRefreshIntervalMinutes" type="number" min="1" max="10080" class="flex h-8 w-20 rounded-md border border-input bg-card px-2 py-1 text-sm">
+                            <button onclick="applyGlobalRefreshInterval()" class="inline-flex items-center justify-center rounded-md border border-input bg-card hover:bg-accent h-8 px-3 text-xs"><span data-i18n="应用到全部">应用到全部</span></button>
                         </div>
                         <button onclick="refreshTokens()" class="inline-flex items-center justify-center rounded-md transition-colors hover:bg-accent h-8 w-8" title="刷新" data-i18n-title="刷新">
                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -166,38 +167,38 @@
         <div id="panelSettings" class="hidden">
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <!-- 安全配置 -->
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="安全配置">安全配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="管理员用户名">管理员用户名</span></label>
-                            <input id="cfgAdminUsername" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                            <input id="cfgAdminUsername" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm">
                             <p class="text-xs text-muted-foreground mt-1"><span data-i18n="管理员用户名">管理员用户名</span></p>
                         </div>
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="旧密码">旧密码</span></label>
-                            <input id="cfgOldPassword" type="password" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="输入旧密码" data-i18n-placeholder="输入旧密码">
+                            <input id="cfgOldPassword" type="password" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="输入旧密码" data-i18n-placeholder="输入旧密码">
                         </div>
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="新密码">新密码</span></label>
-                            <input id="cfgNewPassword" type="password" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="输入新密码" data-i18n-placeholder="输入新密码">
+                            <input id="cfgNewPassword" type="password" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="输入新密码" data-i18n-placeholder="输入新密码">
                         </div>
                     </div>
                     <button onclick="updateAdminPassword()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full mt-4"><span data-i18n="修改密码">修改密码</span></button>
                 </div>
 
                 <!-- API 密钥配置 -->
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="API 密钥配置">API 密钥配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="当前 API Key">当前 API Key</span></label>
-                            <input id="cfgCurrentAPIKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" readonly disabled>
+                            <input id="cfgCurrentAPIKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" readonly disabled>
                             <p class="text-xs text-muted-foreground mt-1"><span data-i18n="当前使用的 API Key（只读）">当前使用的 API Key（只读）</span></p>
                         </div>
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="新 API Key">新 API Key</span></label>
-                            <input id="cfgNewAPIKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="输入新的 API Key" data-i18n-placeholder="输入新的 API Key">
+                            <input id="cfgNewAPIKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="输入新的 API Key" data-i18n-placeholder="输入新的 API Key">
                             <p class="text-xs text-muted-foreground mt-1"><span data-i18n="用于客户端调用 API 的密钥">用于客户端调用 API 的密钥</span></p>
                         </div>
                     </div>
@@ -205,7 +206,7 @@
                 </div>
 
                 <!-- 代理配置 -->
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="代理配置">代理配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
@@ -216,7 +217,7 @@
                         </div>
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="请求代理地址">请求代理地址</span></label>
-                            <input id="cfgProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="http://127.0.0.1:7890 或 socks5://127.0.0.1:1080" data-i18n-placeholder="http://127.0.0.1:7890 或 socks5://127.0.0.1:1080">
+                            <input id="cfgProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="http://127.0.0.1:7890 或 socks5://127.0.0.1:1080" data-i18n-placeholder="http://127.0.0.1:7890 或 socks5://127.0.0.1:1080">
                             <p class="text-xs text-muted-foreground mt-1"><span data-i18n="支持 HTTP 和 SOCKS5 代理">支持 HTTP 和 SOCKS5 代理</span></p>
                         </div>
                         <div class="pt-3 border-t border-border">
@@ -228,46 +229,46 @@
                         </div>
                         <div id="mediaProxyUrlInput" class="hidden">
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="媒体上传下载代理地址">媒体上传下载代理地址</span></label>
-                            <input id="cfgMediaProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="http://127.0.0.1:7897 或 socks5://127.0.0.1:1080" data-i18n-placeholder="http://127.0.0.1:7897 或 socks5://127.0.0.1:1080">
+                            <input id="cfgMediaProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="http://127.0.0.1:7897 或 socks5://127.0.0.1:1080" data-i18n-placeholder="http://127.0.0.1:7897 或 socks5://127.0.0.1:1080">
                             <p class="text-xs text-muted-foreground mt-1"><span data-i18n="支持 HTTP 和 SOCKS5 代理">支持 HTTP 和 SOCKS5 代理</span></p>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-2 mt-4">
-                        <button id="btnTestProxy" onclick="testProxyConfig()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-4"><span data-i18n="测试代理">测试代理</span></button>
+                        <button id="btnTestProxy" onclick="testProxyConfig()" class="inline-flex items-center justify-center rounded-md border border-input bg-card hover:bg-accent h-9 px-4"><span data-i18n="测试代理">测试代理</span></button>
                         <button onclick="saveProxyConfig()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4"><span data-i18n="保存配置">保存配置</span></button>
                     </div>
                     <p id="proxyTestResult" class="text-xs text-muted-foreground mt-2"><span data-i18n="测试目标：">测试目标：</span><code class="bg-muted px-1 py-0.5 rounded">https://flow.google.com/</code></p>
                 </div>
 
                 <!-- 生成配置 -->
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="生成配置">生成配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="图片生成超时时间（秒）">图片生成超时时间（秒）</span></label>
-                            <input id="cfgImageTimeout" type="number" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="300" min="60" max="3600">
+                            <input id="cfgImageTimeout" type="number" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="300" min="60" max="3600">
                             <p class="text-xs text-muted-foreground mt-1"><span data-i18n="图片生成超时时间，范围：60-3600 秒（1分钟-1小时），超时后自动释放Token锁">图片生成超时时间，范围：60-3600 秒（1分钟-1小时），超时后自动释放Token锁</span></p>
                         </div>
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="视频生成超时时间（秒）">视频生成超时时间（秒）</span></label>
-                            <input id="cfgVideoTimeout" type="number" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="1500" min="60" max="7200">
+                            <input id="cfgVideoTimeout" type="number" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="1500" min="60" max="7200">
                             <p class="text-xs text-muted-foreground mt-1"><span data-i18n="视频生成超时时间，范围：60-7200 秒（1分钟-2小时），超时后返回上游API超时错误">视频生成超时时间，范围：60-7200 秒（1分钟-2小时），超时后返回上游API超时错误</span></p>
                         </div>
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="最大重试次数">最大重试次数</span></label>
-                            <input id="cfgMaxRetries" type="number" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="3" min="1">
+                            <input id="cfgMaxRetries" type="number" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="3" min="1">
                             <p class="text-xs text-muted-foreground mt-1"><span data-i18n="生成、上传、轮询等请求失败时的最大重试次数，最小值为 1">生成、上传、轮询等请求失败时的最大重试次数，最小值为 1</span></p>
                         </div>
                     </div>
                     <button onclick="saveGenerationTimeout()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 w-full mt-4"><span data-i18n="保存配置">保存配置</span></button>
                 </div>
 
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="Token 轮询配置">Token 轮询配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="轮询模式">轮询模式</span></label>
-                            <select id="cfgCallLogicMode" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                            <select id="cfgCallLogicMode" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm">
                                 <option value="default" data-i18n="随机轮询">随机轮询</option>
                                 <option value="polling" data-i18n="顺序轮询">顺序轮询</option>
                             </select>
@@ -278,12 +279,12 @@
                 </div>
 
                 <!-- 错误处理配置 -->
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="错误处理配置">错误处理配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="错误封禁阈值">错误封禁阈值</span></label>
-                            <input id="cfgErrorBan" type="number" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="3">
+                            <input id="cfgErrorBan" type="number" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="3">
                             <p class="text-xs text-muted-foreground mt-1"><span data-i18n="Token 连续错误达到此次数后自动禁用">Token 连续错误达到此次数后自动禁用</span></p>
                         </div>
                     </div>
@@ -291,7 +292,7 @@
                 </div>
 
                 <!-- 缓存配置 -->
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="缓存配置">缓存配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
@@ -306,12 +307,12 @@
                         <div id="cacheOptions" style="display: none;" class="space-y-4 pt-4 border-t border-border">
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="缓存超时时间（秒）">缓存超时时间（秒）</span></label>
-                                <input id="cfgCacheTimeout" type="number" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="7200" min="0" max="86400">
+                                <input id="cfgCacheTimeout" type="number" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="7200" min="0" max="86400">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="文件缓存超时时间，范围：0-86400 秒，其中 0 表示永不过期，不自动删除缓存文件">文件缓存超时时间，范围：0-86400 秒，其中 0 表示永不过期，不自动删除缓存文件</span></p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="缓存文件访问域名">缓存文件访问域名</span></label>
-                                <input id="cfgCacheBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="https://yourdomain.com">
+                                <input id="cfgCacheBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="https://yourdomain.com">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="留空则使用服务器地址，例如：https://yourdomain.com">留空则使用服务器地址，例如：https://yourdomain.com</span></p>
                             </div>
                             <div id="cacheEffectiveUrl" class="rounded-md bg-muted p-3 hidden">
@@ -325,7 +326,7 @@
                 </div>
 
                 <!-- 插件连接配置 -->
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="插件连接配置">插件连接配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
@@ -339,7 +340,7 @@
                         <div>
                             <label class="text-sm font-semibold mb-2 block"><span data-i18n="连接Token">连接Token</span></label>
                             <div class="flex gap-2">
-                                <input id="cfgPluginConnectionToken" type="text" class="flex h-9 min-w-0 flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="留空自动生成" data-i18n-placeholder="留空自动生成">
+                                <input id="cfgPluginConnectionToken" type="text" class="flex h-9 min-w-0 flex-1 rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="留空自动生成" data-i18n-placeholder="留空自动生成">
                                 <button onclick="generateRandomToken()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4"><span data-i18n="随机">随机</span></button>
                                 <button onclick="copyConnectionToken()" class="inline-flex items-center justify-center rounded-md bg-secondary text-secondary-foreground hover:bg-secondary/80 h-9 px-4"><span data-i18n="复制">复制</span></button>
                             </div>
@@ -362,12 +363,12 @@
                 </div>
 
                 <!-- 验证码配置 -->
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="验证码配置">验证码配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
                             <label class="text-sm font-medium mb-2 block"><span data-i18n="打码方式">打码方式</span></label>
-                            <select id="cfgCaptchaMethod" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" onchange="toggleCaptchaOptions()">
+                            <select id="cfgCaptchaMethod" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" onchange="toggleCaptchaOptions()">
                                 <option value="yescaptcha" data-i18n="YesCaptcha打码">YesCaptcha打码</option>
                                 <option value="flow2api_team" data-i18n="Flow2API团队打码（内置）">Flow2API团队打码（内置）</option>
                                 <option value="extension" data-i18n="浏览器扩展打码">浏览器扩展打码</option>
@@ -387,17 +388,17 @@
                         <div id="yescaptchaOptions" class="space-y-4">
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="YesCaptcha API密钥">YesCaptcha API密钥</span></label>
-                                <input id="cfgYescaptchaApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="请输入YesCaptcha API密钥" data-i18n-placeholder="请输入YesCaptcha API密钥">
+                                <input id="cfgYescaptchaApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="请输入YesCaptcha API密钥" data-i18n-placeholder="请输入YesCaptcha API密钥">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="用于自动获取reCAPTCHA验证码，留空则不使用验证码 ·">用于自动获取reCAPTCHA验证码，留空则不使用验证码 ·</span> <a href="https://yescaptcha.com/i/13Xd8K" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline"><span data-i18n="获取 API Key">获取 API Key</span></a></p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="YesCaptcha API地址">YesCaptcha API地址</span></label>
-                                <input id="cfgYescaptchaBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="https://api.yescaptcha.com">
+                                <input id="cfgYescaptchaBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="https://api.yescaptcha.com">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="YesCaptcha服务地址，默认：https://api.yescaptcha.com">YesCaptcha服务地址，默认：https://api.yescaptcha.com</span></p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block">YesCaptcha Type</label>
-                                <select id="cfgYescaptchaTaskType" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                                <select id="cfgYescaptchaTaskType" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm">
                                     <option value="RecaptchaV3TaskProxyless">RecaptchaV3TaskProxyless - 20 POINTS</option>
                                     <option value="RecaptchaV3TaskProxylessM1">RecaptchaV3TaskProxylessM1 - 25 POINTS</option>
                                     <option value="RecaptchaV3TaskProxylessM1S7">RecaptchaV3TaskProxylessM1S7 - 30 POINTS (minScore 0.7)</option>
@@ -411,12 +412,12 @@
                         <div id="captcharunOptions" class="hidden space-y-4">
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="Captcha.run API密钥">Captcha.run API密钥</span></label>
-                                <input id="cfgCaptcharunApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="请输入Captcha.run API密钥" data-i18n-placeholder="请输入Captcha.run API密钥">
+                                <input id="cfgCaptcharunApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="请输入Captcha.run API密钥" data-i18n-placeholder="请输入Captcha.run API密钥">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="用于自动获取reCAPTCHA验证码 ·">用于自动获取reCAPTCHA验证码 ·</span> <a href="https://captcha.run/sso?inviter=36179602-dbd1-4227-8ec8-98f8c0170c59" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline"><span data-i18n="获取 API Key">获取 API Key</span></a></p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="Captcha.run API地址">Captcha.run API地址</span></label>
-                                <input id="cfgCaptcharunBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="https://api.captcha-run.com">
+                                <input id="cfgCaptcharunBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="https://api.captcha-run.com">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="Captcha.run服务地址，默认：https://api.captcha-run.com">Captcha.run服务地址，默认：https://api.captcha-run.com</span></p>
                             </div>
                         </div>
@@ -425,12 +426,12 @@
                         <div id="twocaptchaOptions" class="hidden space-y-4">
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="2Captcha API密钥">2Captcha API密钥</span></label>
-                                <input id="cfgTwocaptchaApiKey" type="password" autocomplete="off" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="请输入2Captcha API密钥" data-i18n-placeholder="请输入2Captcha API密钥">
+                                <input id="cfgTwocaptchaApiKey" type="password" autocomplete="off" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="请输入2Captcha API密钥" data-i18n-placeholder="请输入2Captcha API密钥">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="用于获取reCAPTCHA v3 Enterprise验证码 ·">用于获取reCAPTCHA v3 Enterprise验证码 ·</span> <a href="https://2captcha.com/auth/register/?from=24953866" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline"><span data-i18n="获取 API Key">获取 API Key</span></a></p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="2Captcha API地址">2Captcha API地址</span></label>
-                                <input id="cfgTwocaptchaBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="https://api.2captcha.com">
+                                <input id="cfgTwocaptchaBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="https://api.2captcha.com">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="2Captcha API v2服务地址，默认：https://api.2captcha.com">2Captcha API v2服务地址，默认：https://api.2captcha.com</span></p>
                             </div>
                         </div>
@@ -439,12 +440,12 @@
                         <div id="capmonsterOptions" class="hidden space-y-4">
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="CapMonster API密钥">CapMonster API密钥</span></label>
-                                <input id="cfgCapmonsterApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="请输入CapMonster API密钥" data-i18n-placeholder="请输入CapMonster API密钥">
+                                <input id="cfgCapmonsterApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="请输入CapMonster API密钥" data-i18n-placeholder="请输入CapMonster API密钥">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="用于自动获取reCAPTCHA验证码">用于自动获取reCAPTCHA验证码</span></p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="CapMonster API地址">CapMonster API地址</span></label>
-                                <input id="cfgCapmonsterBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="https://api.capmonster.cloud">
+                                <input id="cfgCapmonsterBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="https://api.capmonster.cloud">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="CapMonster服务地址，默认：https://api.capmonster.cloud">CapMonster服务地址，默认：https://api.capmonster.cloud</span></p>
                             </div>
                         </div>
@@ -453,12 +454,12 @@
                         <div id="ezcaptchaOptions" class="hidden space-y-4">
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="EzCaptcha API密钥">EzCaptcha API密钥</span></label>
-                                <input id="cfgEzcaptchaApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="请输入EzCaptcha API密钥" data-i18n-placeholder="请输入EzCaptcha API密钥">
+                                <input id="cfgEzcaptchaApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="请输入EzCaptcha API密钥" data-i18n-placeholder="请输入EzCaptcha API密钥">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="用于自动获取reCAPTCHA验证码">用于自动获取reCAPTCHA验证码</span></p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="EzCaptcha API地址">EzCaptcha API地址</span></label>
-                                <input id="cfgEzcaptchaBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="https://api.ez-captcha.com">
+                                <input id="cfgEzcaptchaBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="https://api.ez-captcha.com">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="EzCaptcha服务地址，默认：https://api.ez-captcha.com">EzCaptcha服务地址，默认：https://api.ez-captcha.com</span></p>
                             </div>
                         </div>
@@ -467,12 +468,12 @@
                         <div id="capsolverOptions" class="hidden space-y-4">
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="CapSolver API密钥">CapSolver API密钥</span></label>
-                                <input id="cfgCapsolverApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="请输入CapSolver API密钥" data-i18n-placeholder="请输入CapSolver API密钥">
+                                <input id="cfgCapsolverApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="请输入CapSolver API密钥" data-i18n-placeholder="请输入CapSolver API密钥">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="用于自动获取reCAPTCHA验证码 ·">用于自动获取reCAPTCHA验证码 ·</span> <a href="https://dashboard.capsolver.com/passport/register?inviteCode=z95yVf1HvixI" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline"><span data-i18n="获取 API Key">获取 API Key</span></a></p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="CapSolver API地址">CapSolver API地址</span></label>
-                                <input id="cfgCapsolverBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="https://api.capsolver.com">
+                                <input id="cfgCapsolverBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="https://api.capsolver.com">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="CapSolver服务地址，默认：https://api.capsolver.com">CapSolver服务地址，默认：https://api.capsolver.com</span></p>
                             </div>
                         </div>
@@ -495,7 +496,7 @@
 
                             <div id="browserProxyUrlInput" class="hidden">
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="代理地址">代理地址</span></label>
-                                <input id="cfgBrowserProxyUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="http://host:port 或 socks5://host:port" data-i18n-placeholder="http://host:port 或 socks5://host:port">
+                                <input id="cfgBrowserProxyUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="http://host:port 或 socks5://host:port" data-i18n-placeholder="http://host:port 或 socks5://host:port">
                                 <p class="text-xs text-muted-foreground mt-1">
                                     ✅ <strong><span data-i18n="支持：">支持：</span></strong><span data-i18n="HTTP/HTTPS/SOCKS5/SOCKS5H 代理，均支持带认证">HTTP/HTTPS/SOCKS5/SOCKS5H 代理，均支持带认证</span><br>
                                     <span data-i18n="示例：">示例：</span><code class="bg-muted px-1 py-0.5 rounded">http://user:pass@proxy.com:8080</code> <span data-i18n="或">或</span> <code class="bg-muted px-1 py-0.5 rounded">socks5://user:pass@proxy.com:1080</code>
@@ -504,7 +505,7 @@
 
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="浏览器数量">浏览器数量</span></label>
-                                <input id="cfgBrowserCount" type="number" min="1" max="20" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="1" value="1">
+                                <input id="cfgBrowserCount" type="number" min="1" max="20" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="1" value="1">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="同时启动的浏览器实例数量，每个浏览器只开1个标签页，请求轮询分配">同时启动的浏览器实例数量，每个浏览器只开1个标签页，请求轮询分配</span></p>
                             </div>
                         </div>
@@ -520,7 +521,7 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="text-sm font-medium mb-2 block"><span data-i18n="浏览器实例数量">浏览器实例数量</span></label>
-                                    <input id="cfgPersonalBrowserCount" type="number" min="1" max="20" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="1" value="1">
+                                    <input id="cfgPersonalBrowserCount" type="number" min="1" max="20" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="1" value="1">
                                     <p class="text-xs text-muted-foreground mt-1">
                                         <span data-i18n="personal 模式真实浏览器实例数。">personal 模式真实浏览器实例数。</span><br>
                                         <span data-i18n="有效槽位约等于 实例数 × 单实例标签页，上限 50。">有效槽位约等于 实例数 × 单实例标签页，上限 50。</span>
@@ -529,7 +530,7 @@
 
                                 <div>
                                     <label class="text-sm font-medium mb-2 block"><span data-i18n="单 Token 项目池大小">单 Token 项目池大小</span></label>
-                                    <input id="cfgPersonalProjectPoolSize" type="number" min="1" max="50" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="4" value="4">
+                                    <input id="cfgPersonalProjectPoolSize" type="number" min="1" max="50" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="4" value="4">
                                     <p class="text-xs text-muted-foreground mt-1">
                                         <span data-i18n="只影响该 Token 可轮换的 project_id 数量，不决定打码标签页数。">只影响该 Token 可轮换的 project_id 数量，不决定打码标签页数。</span><br>
                                         <span data-i18n="打码标签页由全局共享池统一复用。">打码标签页由全局共享池统一复用。</span>
@@ -538,7 +539,7 @@
 
                                 <div>
                                     <label class="text-sm font-medium mb-2 block"><span data-i18n="单实例最大标签页">单实例最大标签页</span></label>
-                                    <input id="cfgPersonalMaxTabs" type="number" min="1" max="50" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="5" value="5">
+                                    <input id="cfgPersonalMaxTabs" type="number" min="1" max="50" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="5" value="5">
                                     <p class="text-xs text-muted-foreground mt-1">
                                         <span data-i18n="每个浏览器最多保留多少个共享打码标签页。">每个浏览器最多保留多少个共享打码标签页。</span><br>
                                         <span data-i18n="总并发槽位约为 浏览器实例数 × 这里，上限 50。">总并发槽位约为 浏览器实例数 × 这里，上限 50。</span>
@@ -547,7 +548,7 @@
 
                                 <div>
                                     <label class="text-sm font-medium mb-2 block"><span data-i18n="重置码数">重置码数</span></label>
-                                    <input id="cfgPersonalFreshRestartEveryNSolves" type="number" min="0" max="999" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="10" value="10">
+                                    <input id="cfgPersonalFreshRestartEveryNSolves" type="number" min="0" max="999" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="10" value="10">
                                     <p class="text-xs text-muted-foreground mt-1">
                                         <span data-i18n="成功获取多少个码后清理并重启浏览器。">成功获取多少个码后清理并重启浏览器。</span><br>
                                         <span data-i18n="高并发建议 0 或 &gt;=50，5/10 会频繁重启导致排队。">高并发建议 0 或 >=50，5/10 会频繁重启导致排队。</span>
@@ -557,7 +558,7 @@
 
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="标签空闲超时(秒)">标签空闲超时(秒)</span></label>
-                                <input id="cfgPersonalIdleTTL" type="number" min="60" max="3600" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="600" value="600">
+                                <input id="cfgPersonalIdleTTL" type="number" min="60" max="3600" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="600" value="600">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="标签页空闲多久后自动回收，默认600秒(10分钟)">标签页空闲多久后自动回收，默认600秒(10分钟)</span></p>
                             </div>
 
@@ -571,7 +572,7 @@
 
                             <div id="personalProxyUrlInput" class="hidden">
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="代理地址">代理地址</span></label>
-                                <input id="cfgPersonalProxyUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="http://host:port 或 socks5://host:port" data-i18n-placeholder="http://host:port 或 socks5://host:port">
+                                <input id="cfgPersonalProxyUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="http://host:port 或 socks5://host:port" data-i18n-placeholder="http://host:port 或 socks5://host:port">
                                 <p class="text-xs text-muted-foreground mt-1">
                                     ✅ <strong><span data-i18n="支持：">支持：</span></strong><span data-i18n="HTTP/HTTPS/SOCKS5/SOCKS5H 代理，均支持带认证">HTTP/HTTPS/SOCKS5/SOCKS5H 代理，均支持带认证</span><br>
                                     <span data-i18n="示例：">示例：</span><code class="bg-muted px-1 py-0.5 rounded">http://user:pass@proxy.com:8080</code> <span data-i18n="或">或</span> <code class="bg-muted px-1 py-0.5 rounded">socks5://user:pass@proxy.com:1080</code>
@@ -588,16 +589,16 @@
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="远程服务 Base URL">远程服务 Base URL</span></label>
-                                <input id="cfgRemoteBrowserBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="http://127.0.0.1:8060">
+                                <input id="cfgRemoteBrowserBaseUrl" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="http://127.0.0.1:8060">
                                 <p class="text-xs text-muted-foreground mt-1"><span data-i18n="示例：">示例：</span><code class="bg-muted px-1 py-0.5 rounded">http://127.0.0.1:8060</code></p>
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="远程服务 API Key">远程服务 API Key</span></label>
-                                <input id="cfgRemoteBrowserApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="fcs_xxx">
+                                <input id="cfgRemoteBrowserApiKey" type="text" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="fcs_xxx">
                             </div>
                             <div>
                                 <label class="text-sm font-medium mb-2 block"><span data-i18n="远程请求超时（秒）">远程请求超时（秒）</span></label>
-                                <input id="cfgRemoteBrowserTimeout" type="number" min="5" max="300" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="60" value="60">
+                                <input id="cfgRemoteBrowserTimeout" type="number" min="5" max="300" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="60" value="60">
                             </div>
                         </div>
                     </div>
@@ -607,7 +608,7 @@
                 </div>
 
                 <!-- 调试配置 -->
-                <div class="rounded-lg border border-border bg-background p-6 flex flex-col">
+                <div class="rounded-lg border border-border bg-card p-6 flex flex-col">
                     <h3 class="text-lg font-semibold mb-4"><span data-i18n="调试配置">调试配置</span></h3>
                     <div class="space-y-4 flex-1">
                         <div>
@@ -630,7 +631,7 @@
 
         <!-- 请求日志面板 -->
         <div id="panelLogs" class="hidden">
-            <div class="rounded-lg border border-border bg-background">
+            <div class="rounded-lg border border-border bg-card">
                 <div class="flex flex-wrap items-center justify-between gap-4 p-4 border-b border-border">
                     <h3 class="text-lg font-semibold"><span data-i18n="请求日志">请求日志</span></h3>
                     <div class="flex gap-2">
@@ -649,7 +650,7 @@
                 </div>
                 <div class="relative w-full overflow-auto max-h-[600px]">
                     <table class="w-full table-auto text-sm">
-                        <thead class="sticky top-0 bg-background">
+                        <thead class="sticky top-0 bg-card">
                             <tr class="border-b border-border">
                                 <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground"><span data-i18n="操作类型">&#25805;&#20316;</span></th>
                                 <th class="h-10 px-3 text-left align-middle font-medium text-muted-foreground"><span data-i18n="Token邮箱">Token&#37038;&#31665;</span></th>
@@ -672,7 +673,7 @@
 
         <!-- 日志详情模态框 -->
         <div id="logDetailModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-            <div class="bg-background rounded-lg border border-border w-full max-w-3xl shadow-xl max-h-[80vh] flex flex-col">
+            <div class="bg-background rounded-lg border border-border w-full max-w-3xl shadow-lg max-h-[80vh] flex flex-col">
                 <div class="flex items-center justify-between p-5 border-b border-border">
                     <h3 class="text-lg font-semibold"><span data-i18n="日志详情">日志详情</span></h3>
                     <button onclick="closeLogDetailModal()" class="text-muted-foreground hover:text-foreground">
@@ -698,8 +699,8 @@
 
     <!-- 添加 Token 模态框 -->
     <div id="addModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-background rounded-lg border border-border w-full max-w-2xl shadow-xl my-auto">
-            <div class="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-background">
+        <div class="bg-background rounded-lg border border-border w-full max-w-2xl shadow-lg my-auto">
+            <div class="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-card">
                 <h3 class="text-lg font-semibold"><span data-i18n="添加账号">添加账号</span></h3>
                 <button onclick="closeAddModal()" class="text-muted-foreground hover:text-foreground">
                     <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -712,38 +713,38 @@
                 <!-- Current Flow credentials -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium">Google Cookies <span class="text-red-500">*</span></label>
-                    <textarea id="addTokenGoogleCookies" rows="5" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-y" placeholder="支持 JSON 导出或 name=value; name2=value2" required data-i18n-placeholder="支持 JSON 导出或 name=value; name2=value2"></textarea>
+                    <textarea id="addTokenGoogleCookies" rows="5" class="flex w-full rounded-md border border-input bg-card px-3 py-2 text-sm font-mono resize-y" placeholder="支持 JSON 导出或 name=value; name2=value2" required data-i18n-placeholder="支持 JSON 导出或 name=value; name2=value2"></textarea>
                     <p class="text-xs text-muted-foreground"><span data-i18n="填写当前 flow.google.com 和 Google 账号域的登录 Cookie">填写当前 flow.google.com 和 Google 账号域的登录 Cookie</span></p>
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-medium"><span data-i18n="Google 账号">Google 账号</span> <span class="text-red-500">*</span></label>
-                    <input id="addTokenLoginAccount" type="email" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="name@gmail.com" required>
+                    <input id="addTokenLoginAccount" type="email" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="name@gmail.com" required>
                     <p class="text-xs text-muted-foreground"><span data-i18n="用于稳定识别账号并接收浏览器扩展后续推送">用于稳定识别账号并接收浏览器扩展后续推送</span></p>
                 </div>
 
                 <!-- Remark -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium"><span data-i18n="备注">备注</span> <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                    <input id="addTokenRemark" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="添加备注信息" data-i18n-placeholder="添加备注信息">
+                    <input id="addTokenRemark" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="添加备注信息" data-i18n-placeholder="添加备注信息">
                 </div>
 
                 <!-- Project ID -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium">Project ID <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                    <input id="addTokenProjectId" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="若不填写则系统自动生成" data-i18n-placeholder="若不填写则系统自动生成">
+                    <input id="addTokenProjectId" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm font-mono" placeholder="若不填写则系统自动生成" data-i18n-placeholder="若不填写则系统自动生成">
                     <p class="text-xs text-muted-foreground"><span data-i18n="如果已有Project ID可直接输入,留空则创建新项目">如果已有Project ID可直接输入,留空则创建新项目</span></p>
                 </div>
 
                 <!-- Project Name -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium">Project Name <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                    <input id="addTokenProjectName" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="若不填写则自动生成 (如: Jan 01 - 12:00)" data-i18n-placeholder="若不填写则自动生成 (如: Jan 01 - 12:00)">
+                    <input id="addTokenProjectName" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="若不填写则自动生成 (如: Jan 01 - 12:00)" data-i18n-placeholder="若不填写则自动生成 (如: Jan 01 - 12:00)">
                 </div>
 
                 <!-- Captcha Proxy -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium"><span data-i18n="打码代理">打码代理</span> <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                    <input id="addTokenCaptchaProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="例如 http://user:pass@host:port" data-i18n-placeholder="例如 http://user:pass@host:port">
+                    <input id="addTokenCaptchaProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm font-mono" placeholder="例如 http://user:pass@host:port" data-i18n-placeholder="例如 http://user:pass@host:port">
                     <p class="text-xs text-muted-foreground"><span data-i18n="仅覆盖当前 Token 的浏览器打码代理，留空则使用全局打码代理">仅覆盖当前 Token 的浏览器打码代理，留空则使用全局打码代理</span></p>
                 </div>
 
@@ -752,7 +753,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-sm font-medium"><span data-i18n="协议代理">协议代理</span> <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                            <input id="addTokenProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="例如 http://user:pass@host:port" data-i18n-placeholder="例如 http://user:pass@host:port">
+                            <input id="addTokenProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm font-mono" placeholder="例如 http://user:pass@host:port" data-i18n-placeholder="例如 http://user:pass@host:port">
                         </div>
                     </div>
                     <div class="flex flex-wrap items-center gap-3">
@@ -762,7 +763,7 @@
                         </label>
                         <div class="flex items-center gap-2">
                             <span class="text-sm text-muted-foreground"><span data-i18n="刷新间隔">刷新间隔</span></span>
-                            <input id="addTokenRefreshIntervalMinutes" type="number" value="30" min="1" max="10080" class="flex h-8 w-24 rounded-md border border-input bg-background px-2 py-1 text-sm">
+                            <input id="addTokenRefreshIntervalMinutes" type="number" value="30" min="1" max="10080" class="flex h-8 w-24 rounded-md border border-input bg-card px-2 py-1 text-sm">
                             <span class="text-sm text-muted-foreground"><span data-i18n="分钟">分钟</span></span>
                         </div>
                     </div>
@@ -777,7 +778,7 @@
                                 <input type="checkbox" id="addTokenImageEnabled" checked class="h-4 w-4 rounded border-input">
                                 <span class="text-sm font-medium"><span data-i18n="启用图片生成">启用图片生成</span></span>
                             </label>
-                            <input type="number" id="addTokenImageConcurrency" value="-1" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制" data-i18n-placeholder="并发数" data-i18n-title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
+                            <input type="number" id="addTokenImageConcurrency" value="-1" class="flex h-8 w-20 rounded-md border border-input bg-card px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制" data-i18n-placeholder="并发数" data-i18n-title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
                         </div>
                     </div>
                     <div class="space-y-2">
@@ -786,13 +787,13 @@
                                 <input type="checkbox" id="addTokenVideoEnabled" checked class="h-4 w-4 rounded border-input">
                                 <span class="text-sm font-medium"><span data-i18n="启用视频生成">启用视频生成</span></span>
                             </label>
-                            <input type="number" id="addTokenVideoConcurrency" value="-1" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制" data-i18n-placeholder="并发数" data-i18n-title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
+                            <input type="number" id="addTokenVideoConcurrency" value="-1" class="flex h-8 w-20 rounded-md border border-input bg-card px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制" data-i18n-placeholder="并发数" data-i18n-title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex items-center justify-end gap-3 p-5 border-t border-border sticky bottom-0 bg-background">
-                <button onclick="closeAddModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5"><span data-i18n="取消">取消</span></button>
+            <div class="flex items-center justify-end gap-3 p-5 border-t border-border sticky bottom-0 bg-card">
+                <button onclick="closeAddModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-card hover:bg-accent h-9 px-5"><span data-i18n="取消">取消</span></button>
                 <button id="addTokenBtn" onclick="submitAddToken()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-5">
                     <span id="addTokenBtnText"><span data-i18n="添加">添加</span></span>
                     <svg id="addTokenBtnSpinner" class="hidden animate-spin h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -806,8 +807,8 @@
 
     <!-- 编辑 Token 模态框 -->
     <div id="editModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-background rounded-lg border border-border w-full max-w-2xl shadow-xl my-auto">
-            <div class="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-background">
+        <div class="bg-background rounded-lg border border-border w-full max-w-2xl shadow-lg my-auto">
+            <div class="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-card">
                 <h3 class="text-lg font-semibold"><span data-i18n="账号详情">账号详情</span></h3>
                 <button onclick="closeEditModal()" class="text-muted-foreground hover:text-foreground">
                     <svg class="h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -822,37 +823,37 @@
                 <!-- Current Flow credentials -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium">Google Cookies <span class="text-red-500">*</span></label>
-                    <textarea id="editTokenGoogleCookies" rows="5" class="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-y" placeholder="支持 JSON 导出或 name=value; name2=value2" required data-i18n-placeholder="支持 JSON 导出或 name=value; name2=value2"></textarea>
+                    <textarea id="editTokenGoogleCookies" rows="5" class="flex w-full rounded-md border border-input bg-card px-3 py-2 text-sm font-mono resize-y" placeholder="支持 JSON 导出或 name=value; name2=value2" required data-i18n-placeholder="支持 JSON 导出或 name=value; name2=value2"></textarea>
                     <p class="text-xs text-muted-foreground"><span data-i18n="更新后会立即验证当前 Flow 登录态">更新后会立即验证当前 Flow 登录态</span></p>
                 </div>
                 <div class="space-y-2">
                     <label class="text-sm font-medium"><span data-i18n="Google 账号">Google 账号</span> <span class="text-red-500">*</span></label>
-                    <input id="editTokenLoginAccount" type="email" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="name@gmail.com" required>
+                    <input id="editTokenLoginAccount" type="email" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="name@gmail.com" required>
                 </div>
 
                 <!-- Remark -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium"><span data-i18n="备注">备注</span> <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                    <input id="editTokenRemark" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="添加备注信息" data-i18n-placeholder="添加备注信息">
+                    <input id="editTokenRemark" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="添加备注信息" data-i18n-placeholder="添加备注信息">
                 </div>
 
                 <!-- Project ID -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium">Project ID <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                    <input id="editTokenProjectId" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="若不填写则保持原有值" data-i18n-placeholder="若不填写则保持原有值">
+                    <input id="editTokenProjectId" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm font-mono" placeholder="若不填写则保持原有值" data-i18n-placeholder="若不填写则保持原有值">
                     <p class="text-xs text-muted-foreground"><span data-i18n="修改Project ID会更新Token使用的项目">修改Project ID会更新Token使用的项目</span></p>
                 </div>
 
                 <!-- Project Name -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium">Project Name <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                    <input id="editTokenProjectName" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="若不填写则保持原有值" data-i18n-placeholder="若不填写则保持原有值">
+                    <input id="editTokenProjectName" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm" placeholder="若不填写则保持原有值" data-i18n-placeholder="若不填写则保持原有值">
                 </div>
 
                 <!-- Captcha Proxy -->
                 <div class="space-y-2">
                     <label class="text-sm font-medium"><span data-i18n="打码代理">打码代理</span> <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                    <input id="editTokenCaptchaProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="例如 http://user:pass@host:port" data-i18n-placeholder="例如 http://user:pass@host:port">
+                    <input id="editTokenCaptchaProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm font-mono" placeholder="例如 http://user:pass@host:port" data-i18n-placeholder="例如 http://user:pass@host:port">
                     <p class="text-xs text-muted-foreground"><span data-i18n="填写后优先覆盖全局打码代理，清空后恢复走全局打码代理">填写后优先覆盖全局打码代理，清空后恢复走全局打码代理</span></p>
                 </div>
 
@@ -861,7 +862,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="space-y-2 md:col-span-2">
                             <label class="text-sm font-medium"><span data-i18n="协议代理">协议代理</span> <span class="text-muted-foreground text-xs"><span data-i18n="- 可选">- 可选</span></span></label>
-                            <input id="editTokenProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono" placeholder="例如 http://user:pass@host:port" data-i18n-placeholder="例如 http://user:pass@host:port">
+                            <input id="editTokenProxyUrl" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm font-mono" placeholder="例如 http://user:pass@host:port" data-i18n-placeholder="例如 http://user:pass@host:port">
                         </div>
                     </div>
                     <div class="flex flex-wrap items-center gap-3">
@@ -871,7 +872,7 @@
                         </label>
                         <div class="flex items-center gap-2">
                             <span class="text-sm text-muted-foreground"><span data-i18n="刷新间隔">刷新间隔</span></span>
-                            <input id="editTokenRefreshIntervalMinutes" type="number" min="1" max="10080" class="flex h-8 w-24 rounded-md border border-input bg-background px-2 py-1 text-sm">
+                            <input id="editTokenRefreshIntervalMinutes" type="number" min="1" max="10080" class="flex h-8 w-24 rounded-md border border-input bg-card px-2 py-1 text-sm">
                             <span class="text-sm text-muted-foreground"><span data-i18n="分钟">分钟</span></span>
                         </div>
                     </div>
@@ -886,7 +887,7 @@
                                 <input type="checkbox" id="editTokenImageEnabled" class="h-4 w-4 rounded border-input">
                                 <span class="text-sm font-medium"><span data-i18n="启用图片生成">启用图片生成</span></span>
                             </label>
-                            <input type="number" id="editTokenImageConcurrency" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制" data-i18n-placeholder="并发数" data-i18n-title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
+                            <input type="number" id="editTokenImageConcurrency" class="flex h-8 w-20 rounded-md border border-input bg-card px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制" data-i18n-placeholder="并发数" data-i18n-title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
                         </div>
                     </div>
                     <div class="space-y-2">
@@ -895,13 +896,13 @@
                                 <input type="checkbox" id="editTokenVideoEnabled" class="h-4 w-4 rounded border-input">
                                 <span class="text-sm font-medium"><span data-i18n="启用视频生成">启用视频生成</span></span>
                             </label>
-                            <input type="number" id="editTokenVideoConcurrency" class="flex h-8 w-20 rounded-md border border-input bg-background px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制" data-i18n-placeholder="并发数" data-i18n-title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
+                            <input type="number" id="editTokenVideoConcurrency" class="flex h-8 w-20 rounded-md border border-input bg-card px-2 py-1 text-sm" placeholder="并发数" title="并发数量限制：设置同时处理的最大请求数。-1表示不限制" data-i18n-placeholder="并发数" data-i18n-title="并发数量限制：设置同时处理的最大请求数。-1表示不限制">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="flex items-center justify-end gap-3 p-5 border-t border-border sticky bottom-0 bg-background">
-                <button onclick="closeEditModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5"><span data-i18n="取消">取消</span></button>
+            <div class="flex items-center justify-end gap-3 p-5 border-t border-border sticky bottom-0 bg-card">
+                <button onclick="closeEditModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-card hover:bg-accent h-9 px-5"><span data-i18n="取消">取消</span></button>
                 <button id="editTokenBtn" onclick="submitEditToken()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-5">
                     <span id="editTokenBtnText"><span data-i18n="保存">保存</span></span>
                     <svg id="editTokenBtnSpinner" class="hidden animate-spin h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -915,7 +916,7 @@
 
     <!-- 账号导入模态框 -->
     <div id="importModal" class="hidden fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-        <div class="bg-background rounded-lg border border-border w-full max-w-md shadow-xl">
+        <div class="bg-background rounded-lg border border-border w-full max-w-md shadow-lg">
             <div class="flex items-center justify-between p-5 border-b border-border">
                 <h3 class="text-lg font-semibold"><span data-i18n="导入账号">导入账号</span></h3>
                 <button onclick="closeImportModal()" class="text-muted-foreground hover:text-foreground">
@@ -928,7 +929,7 @@
             <div class="p-5 space-y-4">
                 <div>
                     <label class="text-sm font-medium mb-2 block"><span data-i18n="选择 JSON 文件">选择 JSON 文件</span></label>
-                    <input type="file" id="importFile" accept=".json" class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
+                    <input type="file" id="importFile" accept=".json" class="flex h-9 w-full rounded-md border border-input bg-card px-3 py-2 text-sm">
                     <p class="text-xs text-muted-foreground mt-1"><span data-i18n="支持本系统导出的账号 JSON、单个账号的浏览器 Cookie 导出（数组）或 {&quot;cookies&quot;: [...]} 文件，单次最多 100 个账号">支持本系统导出的账号 JSON、单个账号的浏览器 Cookie 导出（数组）或 {"cookies": [...]} 文件，单次最多 100 个账号</span></p>
                 </div>
                 <div class="rounded-md bg-blue-50 dark:bg-blue-900/20 p-3 border border-blue-200 dark:border-blue-800">
@@ -939,7 +940,7 @@
                 <p class="text-xs text-amber-700 dark:text-amber-300"><span data-i18n="导出文件包含可直接登录 Flow 的 Cookie，请仅在可信设备上保存和导入。">导出文件包含可直接登录 Flow 的 Cookie，请仅在可信设备上保存和导入。</span></p>
             </div>
             <div class="flex items-center justify-end gap-3 p-5 border-t border-border">
-                <button onclick="closeImportModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent h-9 px-5"><span data-i18n="取消">取消</span></button>
+                <button onclick="closeImportModal()" class="inline-flex items-center justify-center rounded-md border border-input bg-card hover:bg-accent h-9 px-5"><span data-i18n="取消">取消</span></button>
                 <button id="importBtn" onclick="submitImportTokens()" class="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-5">
                     <span id="importBtnText"><span data-i18n="导入">导入</span></span>
                     <svg id="importBtnSpinner" class="hidden animate-spin h-4 w-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
