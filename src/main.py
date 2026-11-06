@@ -335,6 +335,16 @@ async def theme_stylesheet():
     )
 
 
+@app.get("/static/shell.js", include_in_schema=False)
+async def shell_script():
+    """Shared header and navigation rendered on every console page."""
+    return FileResponse(
+        str(static_path / "shell.js"),
+        media_type="application/javascript",
+        headers=_STATIC_PAGE_NO_CACHE_HEADERS,
+    )
+
+
 @app.get("/", response_class=HTMLResponse)
 async def index():
     """Redirect to login page"""

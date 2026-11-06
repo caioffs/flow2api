@@ -1,11 +1,35 @@
 {
   "zh-CN": {
-    "界面语言": "界面语言"
+    "界面语言": "界面语言",
+    "Token 管理": "Token 管理",
+    "系统配置": "系统配置",
+    "请求日志": "请求日志",
+    "测试页面": "测试页面",
+    "浏览器扩展": "浏览器扩展",
+    "退出": "退出",
+    "GitHub 仓库": "GitHub 仓库",
+    "管理后台": "管理后台"
   },
   "en": {
-    "界面语言": "Interface language"
+    "界面语言": "Interface language",
+    "Token 管理": "Token Management",
+    "系统配置": "System Settings",
+    "请求日志": "Request Logs",
+    "测试页面": "Model Tester",
+    "浏览器扩展": "Browser extensions",
+    "退出": "Sign out",
+    "GitHub 仓库": "GitHub repository",
+    "管理后台": "Admin console"
   },
   "pt-BR": {
-    "界面语言": "Idioma da interface"
+    "界面语言": "Idioma da interface",
+    "Token 管理": "Gerenciamento de tokens",
+    "系统配置": "Configurações do sistema",
+    "请求日志": "Logs de requisições",
+    "测试页面": "Teste de modelos",
+    "浏览器扩展": "Extensões do navegador",
+    "退出": "Sair",
+    "GitHub 仓库": "Repositório no GitHub",
+    "管理后台": "Painel administrativo"
   }
 }

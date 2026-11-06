@@ -196,11 +196,15 @@ The token updater extension is maintained by a third-party project and is not bu
 
 登录页与管理后台通过 `tailwind.config` 的语义色（background / card / border / muted / accent / primary / destructive）映射到同一套变量；模型测试页与浏览器扩展页直接引用 CSS 变量。只改 `theme.css` 的 `:root` 即可整体换色，页面本身无需改动。
 
+三个管理页面（Token 管理 / 模型测试 / 浏览器扩展）共用 `static/shell.js` 渲染的顶部导航与标签栏，任何页面切换后头部都保持一致，当前页面高亮。新增页面只需在 `<body>` 上写 `data-page` 并放入 `<div id="app-shell"></div>`。
+
 Every page shares one token set in `static/theme.css`: cream paper `#fdfbf9`, charcoal ink `#171717`, a single marker-orange accent `#ff6f1e`, and Dew Drop `#f7efe9` as the secondary surface. Radii are fixed at 12px for cards, 8px for inputs and 20px for pill buttons, and only two whisper-light shadows exist.
 
 Headlines use Fraunces (the gelica substitute) and body copy uses Inter (the Geist substitute). Both load from Google Fonts and fall back to system fonts offline.
 
 The login page and admin console map their Tailwind semantic colours onto the same tokens, while the model tester and extensions pages consume the CSS variables directly. Recolouring the app means editing `:root` in `theme.css` only — no page markup changes.
+
+The three console pages (tokens, model tester, browser extensions) share the header and tab bar rendered by `static/shell.js`, so the navigation stays identical across them and highlights the current page. A new page only needs `data-page` on `<body>` and an empty `<div id="app-shell"></div>`.
 
 ## 🌐 界面语言 / Interface language
 
