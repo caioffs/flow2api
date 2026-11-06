@@ -166,25 +166,34 @@ Prometheus 可直接抓 `/metrics`。如果部署到 Kubernetes，建议只在�
 - 图生图 / 图生视频场景支持上传图片
 - 生成完成后直接预览图片或视频
 
-## 🧩 浏览器扩展 / Browser extensions
+## 🧩 浏览器扩展 / Browser extension
 
-管理后台右上角新增 **浏览器扩展**（`/extensions`）页面，用于安装并检查验证码扩展：
+只有一个扩展：**Flow2API Companion**（`extension/`）。它同时做两件事：
 
-- **直接下载**：点击按钮即可获取打包好的 `flow2api-captcha-worker-<版本>.zip`，无需手动找目录或压缩。
-- **自动配置**：下载的压缩包已经写入当前实例的 WebSocket 地址和 API Key，解压后 `加载已解压的扩展程序` 即可连接，不必再手抄密钥。
-- **实时状态**：页面每 5 秒刷新一次，显示是否已连接、Route Key、客户端名称以及当前使用的 API Key（带复制按钮）。
-- **一键自检**：`测试扩展` 会真的让扩展生成一个 reCAPTCHA token 并回报耗时，不用先生成图片才知道能不能用。
-- **诊断**：最近 20 次 token 请求的成败、耗时和错误会列在页面上；当扩展的 Route Key 与 Token 配置不匹配时会直接给出告警。
+1. **保持 Google 登录 Cookie 新鲜** —— 读取当前浏览器配置里的 `flow.google.com` 会话，推送到 `/api/plugin/update-token`。
+2. **生成 reCAPTCHA token** —— 通过 WebSocket（`/captcha_ws`）按需生成，使用你自己的已登录浏览器。
 
-令牌更新扩展（Cookie 同步）由第三方维护，未随本项目分发，页面只提供官方仓库链接。
+配置只需要 **一个 API Key**：插件接口与 WebSocket 使用同一把密钥（旧的连接 Token 仍然兼容）。扩展不必知道自己在服务哪个账号——服务端从 Flow 首页的 `WIZ_global_data.oPEP7c` 读取账号邮箱，自动归档到对应 Token。
 
-The admin console links to **Browser extensions** (`/extensions`), which installs and verifies the captcha extension:
+管理后台的 **浏览器扩展**（`/extensions`）页面提供：
 
-- **One-click download** of the packaged `flow2api-captcha-worker-<version>.zip`.
-- **Pre-configured archive**: the ZIP already carries this instance's WebSocket URL and API key, so loading it unpacked is enough — no key to copy by hand.
-- **Live status** every 5 seconds: connected or not, route key, client label, and the active API key with a copy button.
-- **One-click self-test**: `Test extension` asks the extension for a real reCAPTCHA token and reports the round-trip time.
-- **Diagnostics**: the last 20 token requests (result, duration, error) are listed, plus warnings when an extension route key does not match any token.
+- **直接下载**：打包好的 `flow2api-companion-<版本>.zip`，已写入当前实例地址和 API Key。
+- **实时状态**：每 5 秒刷新，显示连接状态、Route Key、客户端名称和 API Key（可复制）。
+- **一键自检**：`测试扩展` 真的生成一个 token 并回报耗时。
+- **诊断**：最近 20 次 token 请求的成败、耗时和错误，以及 Route Key 不匹配的告警。
+
+安装步骤：下载并解压 → `chrome://extensions` 开启开发者模式 → 加载已解压的扩展程序 → 打开选项填入 API Key → `立即同步`。
+
+The project ships **one** extension, **Flow2API Companion** (`extension/`), which does both jobs:
+
+1. **Keeps the Google session fresh** — reads the `flow.google.com` session from the current browser profile and pushes it to `/api/plugin/update-token`.
+2. **Mints reCAPTCHA tokens** — on demand over `/captcha_ws`, using your own logged-in browser.
+
+It needs a **single API key**: the plugin endpoint and the WebSocket accept the same secret (the legacy connection token still works). The extension does not need to know which account it serves — the server reads the account email from `WIZ_global_data.oPEP7c` on the Flow home page and files the cookies under that token automatically.
+
+The console's **Browser extensions** page (`/extensions`) offers a one-click download of `flow2api-companion-<version>.zip` pre-filled with this instance's address and API key, a live connection status, a real token self-test, and the last 20 token requests with route-key mismatch warnings.
+
+Setup: download and unzip → `chrome://extensions` with developer mode → load unpacked → paste the API key in the options → `Sync now`.
 
 The token updater extension is maintained by a third-party project and is not bundled; the page only links to its official repository.
 

@@ -1,22 +1,24 @@
 {
   "manifest_version": 3,
-  "name": "Flow2API Captcha Worker",
-  "version": "1.1.0",
-  "description": "Generate Google Labs reCAPTCHA Enterprise tokens for Flow2API.",
+  "name": "Flow2API Companion",
+  "version": "2.0.0",
+  "description": "Keeps the Flow2API Google session fresh and mints reCAPTCHA tokens.",
   "permissions": [
     "storage",
     "tabs",
-    "scripting"
+    "scripting",
+    "cookies",
+    "alarms"
   ],
   "host_permissions": [
     "https://labs.google/*",
-    "https://flow.google.com/*"
+    "https://*.google.com/*"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
-    "default_title": "Flow2API Captcha Worker"
+    "default_title": "Flow2API Companion"
   },
   "content_scripts": [
     {
@@ -29,16 +31,6 @@
       ],
       "run_at": "document_start",
       "world": "MAIN"
-    },
-    {
-      "matches": [
-        "https://labs.google/*",
-        "https://flow.google.com/*"
-      ],
-      "js": [
-        "content.js"
-      ],
-      "run_at": "document_idle"
     }
   ],
   "options_page": "options.html"

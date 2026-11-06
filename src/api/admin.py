@@ -49,6 +49,7 @@ from ..core.account_tiers import (
     supports_model_for_tier,
 )
 from ..services.generation_handler import MODEL_CONFIG
+from ..services.flow_account import resolve_account_email
 from ..services.token_manager import TokenManager
 from ..services.proxy_manager import ProxyManager
 from ..services.concurrency_manager import ConcurrencyManager
@@ -1187,8 +1188,8 @@ def _read_extension_version(extension_dir: Path) -> str:
         return "0.0.0"
 
 
-def _build_extension_zip(extension_dir: Path, server_url: str, api_key: str) -> bytes:
-    """Package the extension, pre-filling the server URL and API key.
+def _build_extension_zip(extension_dir: Path, server_base: str, api_key: str) -> bytes:
+    """Package the extension, pre-filling the server address and API key.
 
     The repository ships empty defaults so it is safe to publish; the archive a
     user downloads already points at their own Flow2API instance.
@@ -1207,10 +1208,10 @@ def _build_extension_zip(extension_dir: Path, server_url: str, api_key: str) -> 
                 except UnicodeDecodeError:
                     pass
                 else:
-                    if server_url:
+                    if server_base:
                         text = re.sub(
-                            r'serverUrl:\s*"[^"]*"',
-                            f'serverUrl: {json.dumps(server_url)}',
+                            r'serverBase:\s*"[^"]*"',
+                            f'serverBase: {json.dumps(server_base)}',
                             text,
                         )
                     if api_key:
@@ -1234,19 +1235,18 @@ async def download_captcha_worker(
 
     forwarded_proto = (request.headers.get("x-forwarded-proto") or "").split(",")[0].strip()
     scheme = forwarded_proto or request.url.scheme or "http"
-    ws_scheme = "wss" if scheme == "https" else "ws"
     host = request.headers.get("host") or request.url.netloc or "127.0.0.1:8000"
-    server_url = f"{ws_scheme}://{host}/captcha_ws"
+    server_base = f"{scheme}://{host}"
     admin_config = await db.get_admin_config()
 
     payload = _build_extension_zip(
         _EXTENSIONS_DIR,
-        server_url=server_url,
+        server_base=server_base,
         api_key=(admin_config.api_key or "").strip(),
     )
 
     version = _read_extension_version(_EXTENSIONS_DIR)
-    filename = f"flow2api-captcha-worker-{version}.zip"
+    filename = f"flow2api-companion-{version}.zip"
     return Response(
         content=payload,
         media_type="application/zip",
@@ -2909,7 +2909,14 @@ async def test_captcha_score(
 
 
 async def _verify_plugin_connection_token(authorization: Optional[str]) -> None:
+    """Accept the plugin connection token or the panel API key.
+
+    A single browser extension pushes cookies and mints captcha tokens, so it
+    should only need one secret. The dedicated connection token keeps working
+    for older clients.
+    """
     plugin_config = await db.get_plugin_config()
+    admin_config = await db.get_admin_config()
     provided_token = ""
     normalized_authorization = str(authorization or "").strip()
     if normalized_authorization:
@@ -2919,11 +2926,13 @@ async def _verify_plugin_connection_token(authorization: Optional[str]) -> None:
             if separator and scheme.lower() == "bearer"
             else normalized_authorization
         )
-    expected_token = str(plugin_config.connection_token or "")
-    if (
-        not expected_token
-        or not provided_token
-        or not secrets.compare_digest(provided_token, expected_token)
+    candidates = [
+        str(plugin_config.connection_token or ""),
+        str(admin_config.api_key or ""),
+    ]
+    if not provided_token or not any(
+        candidate and secrets.compare_digest(provided_token, candidate)
+        for candidate in candidates
     ):
         raise HTTPException(status_code=401, detail="Invalid connection token")
 
@@ -3030,6 +3039,11 @@ async def plugin_update_token(
             detail=f"Google Cookie 验证失败：{str(cookie_error)}",
         ) from cookie_error
 
+    if not email:
+        # The extension does not need to know the account: the Flow page
+        # carries it in the bootstrap payload.
+        email = (await resolve_account_email(google_cookies) or "").strip().lower()
+
     cookie_hash = hashlib.sha256(google_cookies.encode("utf-8")).hexdigest()[:32]
     session_token = f"frontend-{cookie_hash}"
 
@@ -3068,12 +3082,14 @@ async def plugin_update_token(
                     "message": f"Token updated and auto-enabled for {email}",
                     "action": "updated",
                     "auto_enabled": True,
+                    "email": email,
                 }
 
             return {
                 "success": True,
                 "message": f"Token updated for {email}",
                 "action": "updated",
+                "email": email,
             }
         except Exception as e:
             raise HTTPException(
@@ -3097,6 +3113,7 @@ async def plugin_update_token(
                 "message": f"Token added for {new_token.email}",
                 "action": "added",
                 "token_id": new_token.id,
+                "email": new_token.email,
             }
         except Exception as e:
             raise HTTPException(

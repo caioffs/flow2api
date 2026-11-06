@@ -128,28 +128,20 @@ a.ext { color: var(--sienna); }
 
   <section class="card">
     <div class="card-head">
-      <h2 data-i18n="打码扩展">打码扩展</h2>
+      <h2 data-i18n="扩展 Flow2API Companion">扩展 Flow2API Companion</h2>
       <span id="extVersion" class="pill tag-idle">v—</span>
     </div>
-    <p class="lead" data-i18n="用你自己登录的浏览器生成 reCAPTCHA token，不需要第三方打码服务。">用你自己登录的浏览器生成 reCAPTCHA token，不需要第三方打码服务。</p>
-    <a id="downloadExt" class="btn" href="/api/extensions/captcha-worker/download" data-i18n="下载打码扩展">下载打码扩展</a>
+    <p class="lead" data-i18n="一个扩展完成两件事：保持 Google 登录 Cookie 新鲜，并在你的浏览器里生成 reCAPTCHA token。">一个扩展完成两件事：保持 Google 登录 Cookie 新鲜，并在你的浏览器里生成 reCAPTCHA token。</p>
+    <a id="downloadExt" class="btn" href="/api/extensions/captcha-worker/download" data-i18n="下载扩展">下载扩展</a>
 
     <h3 data-i18n="安装步骤">安装步骤</h3>
     <ol>
       <li data-i18n="1. 下载并解压 ZIP。">1. 下载并解压 ZIP。</li>
       <li data-i18n="2. 打开 chrome://extensions，开启「开发者模式」，点「加载已解压的扩展程序」，选择解压出的文件夹。">2. 打开 chrome://extensions，开启「开发者模式」，点「加载已解压的扩展程序」，选择解压出的文件夹。</li>
-      <li data-i18n="3. 打开扩展的「选项」，WebSocket 填 ws://127.0.0.1:8000/captcha_ws，API Key 填上方的值，Route Key 留空。">3. 打开扩展的「选项」，WebSocket 填 ws://127.0.0.1:8000/captcha_ws，API Key 填上方的值，Route Key 留空。</li>
-      <li data-i18n="4. 回到本页点「测试扩展」，状态变成「已连接」就完成了。">4. 回到本页点「测试扩展」，状态变成「已连接」就完成了。</li>
+      <li data-i18n="3. 打开扩展的「选项」，填入上方的 API Key（服务器地址已自动填好）。">3. 打开扩展的「选项」，填入上方的 API Key（服务器地址已自动填好）。</li>
+      <li data-i18n="4. 点「立即同步」，账号会自动出现；回到本页确认状态为「已连接」。">4. 点「立即同步」，账号会自动出现；回到本页确认状态为「已连接」。</li>
     </ol>
-  </section>
-
-  <section class="card">
-    <div class="card-head">
-      <h2 data-i18n="令牌更新扩展（第三方）">令牌更新扩展（第三方）</h2>
-    </div>
-    <p class="lead" data-i18n="自动刷新 Google 登录 Cookie，避免 token 过期。">自动刷新 Google 登录 Cookie，避免 token 过期。</p>
-    <a class="btn btn-ghost" href="https://github.com/TheSmallHanCat/Flow2API-Token-Updater" target="_blank" rel="noopener noreferrer" data-i18n="打开官方仓库">打开官方仓库</a>
-    <p class="note" data-i18n="该扩展由其他项目维护，没有随本项目分发。请从官方仓库获取。">该扩展由其他项目维护，没有随本项目分发。请从官方仓库获取。</p>
+    <p class="note" data-i18n="更新扩展文件后，需要在 chrome://extensions 点一下刷新按钮。">更新扩展文件后，需要在 chrome://extensions 点一下刷新按钮。</p>
   </section>
 </div>
 
